@@ -678,9 +678,6 @@ public abstract class AbstractDrawnEntity extends Entity {
         compound.putString("WoodType", getWoodType().name());
     }
 
-    public RenderInfo getInfo(final float delta) {
-        return new RenderInfo(delta);
-    }
 
     public void toggleSlow() {
         final Entity pulling = this.pulling;
