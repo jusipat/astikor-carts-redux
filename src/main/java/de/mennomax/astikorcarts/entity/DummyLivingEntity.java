@@ -98,11 +98,6 @@ public class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canChangeDimensions(Level level, Level level2) {
-        return false;
-    }
-
-    @Override
     public boolean canAttackType(final EntityType<?> type) {
         return false;
     }
@@ -115,11 +110,6 @@ public class DummyLivingEntity extends LivingEntity {
     @Override
     public boolean isAffectedByPotions() {
         return false;
-    }
-
-    @Override
-    public void kill() {
-        this.discard();
     }
 
     @Override

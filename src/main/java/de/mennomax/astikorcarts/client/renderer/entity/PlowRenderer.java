@@ -9,6 +9,7 @@ import de.mennomax.astikorcarts.entity.PlowEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -28,8 +29,9 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
         return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + entity.getWoodType().name() + "_plow.png");
     }
 
+
     @Override
-    protected void renderContents(final PlowEntity entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+    protected void renderContents(EntityRenderState renderState, PoseStack stack, MultiBufferSource source, int packedLight) {
         for (int i = 0; i < entity.getItemStacks().size(); i++) {
             final ItemStack itemStack = entity.getStackInSlot(i);
             if (itemStack.isEmpty()) {
@@ -47,4 +49,5 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
             }, stack);
         }
     }
+
 }

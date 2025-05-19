@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.util.Mth;
@@ -22,7 +23,13 @@ import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends EntityModel<T>> extends EntityRenderer<T> {
+public abstract class DrawnRenderer<
+        E extends AbstractDrawnEntity,
+        S extends EntityRenderState,
+        M extends EntityModel<S>
+        > extends EntityRenderer<E, S> {
+
+
     protected M model;
 
     private final ModelPart flag;
@@ -32,28 +39,28 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
     protected DrawnRenderer(final EntityRendererProvider.Context renderManager, final M model) {
         super(renderManager);
         this.model = model;
-        ModelPart banner = renderManager.bakeLayer(ModelLayers.BANNER);
+        ModelPart banner = renderManager.bakeLayer(ModelLayers.STANDING_BANNER);
         this.flag = banner.getChild("flag");
         this.pole = banner.getChild("pole");
         this.bar = banner.getChild("bar");
     }
 
     @Override
-    public void render(final T entity, final float yaw, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
+    public void render(S renderState, PoseStack stack, MultiBufferSource source, int packedLight) {
         stack.pushPose();
         final AbstractDrawnEntity.RenderInfo info = entity.getInfo(delta);
         this.setupRotation(entity, info.getYaw(), delta, stack);
 
-        this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
+        this.model.setupAnim(renderState);
         final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
         this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY);
         this.renderContents(entity, delta, stack, source, packedLight);
 
         stack.popPose();
-        super.render(entity, info.getYaw(), delta, stack, source, packedLight);
+        super.render(renderState, stack, source, packedLight);
     }
 
-    protected abstract void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight);
+    protected abstract void renderContents(final EntityRenderState renderState, final PoseStack stack, final MultiBufferSource source, final int packedLight);
 
     public void setupRotation(final T entity, final float entityYaw, final float delta, final PoseStack stack) {
         stack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw));
@@ -69,6 +76,7 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         }
         stack.scale(-1.0F, -1.0F, 1.0F);
     }
+
 
     protected void renderBanner(final T entity, final PoseStack stack, final MultiBufferSource source, float delta, final int packedLight, final DyeColor color, final BannerPatternLayers banner) {
         stack.pushPose();

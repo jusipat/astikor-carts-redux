@@ -95,10 +95,10 @@ public abstract class AbstractDrawnEntity extends Entity {
     }
 
     //Client
-    @Override
-    public @NotNull AABB getBoundingBoxForCulling() {
-        return this.getBoundingBox().inflate(3.0D, 3.0D, 3.0D);
-    }
+//    @Override
+//    public @NotNull AABB getBoundingBoxForCulling() {
+//        return this.getBoundingBox().inflate(3.0D, 3.0D, 3.0D);
+//    }
 
     @Override
     public void tick() {
@@ -411,9 +411,10 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     protected abstract AstikorCartsConfig.CartConfig getConfig();
 
+
     @Override
-    public boolean hurt(final DamageSource source, final float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableToBase(source)) {
             return false;
         } else if (!this.level().isClientSide && this.isAlive()) {
             if (source.is(DamageTypes.CACTUS)) {
@@ -452,7 +453,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
                 this.setBanner(banner);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.SUCCESS_SERVER;
         }
         return InteractionResult.PASS;
     }
@@ -463,10 +464,10 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.getServer().overworld().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             if (!byCreativePlayer) {
-                this.spawnAtLocation(this.getCartItem());
-                this.spawnAtLocation(this.getBanner());
+                this.spawnAtLocation((ServerLevel)this.level(), this.getCartItem());
+                this.spawnAtLocation((ServerLevel)this.level(), this.getBanner());
             }
             this.onDestroyedAndDoDrops(source);
         }
