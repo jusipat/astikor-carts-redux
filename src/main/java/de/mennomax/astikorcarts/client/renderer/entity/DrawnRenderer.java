@@ -23,13 +23,7 @@ import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public abstract class DrawnRenderer<
-        E extends AbstractDrawnEntity,
-        S extends EntityRenderState,
-        M extends EntityModel<S>
-        > extends EntityRenderer<E, S> {
-
-
+public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends EntityRenderState, M extends EntityModel<S>> extends EntityRenderer<T, S>  {
     protected M model;
 
     private final ModelPart flag;
@@ -46,21 +40,21 @@ public abstract class DrawnRenderer<
     }
 
     @Override
-    public void render(S renderState, PoseStack stack, MultiBufferSource source, int packedLight) {
+    public void render(S renderState, PoseStack stack, MultiBufferSource bufferSource, int packedLight) {
         stack.pushPose();
         final AbstractDrawnEntity.RenderInfo info = entity.getInfo(delta);
         this.setupRotation(entity, info.getYaw(), delta, stack);
 
-        this.model.setupAnim(renderState);
+        this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
         final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
         this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY);
         this.renderContents(entity, delta, stack, source, packedLight);
 
         stack.popPose();
-        super.render(renderState, stack, source, packedLight);
+        super.render(renderState, poseStack, bufferSource, packedLight);
     }
 
-    protected abstract void renderContents(final EntityRenderState renderState, final PoseStack stack, final MultiBufferSource source, final int packedLight);
+    protected abstract void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight);
 
     public void setupRotation(final T entity, final float entityYaw, final float delta, final PoseStack stack) {
         stack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw));
@@ -76,7 +70,6 @@ public abstract class DrawnRenderer<
         }
         stack.scale(-1.0F, -1.0F, 1.0F);
     }
-
 
     protected void renderBanner(final T entity, final PoseStack stack, final MultiBufferSource source, float delta, final int packedLight, final DyeColor color, final BannerPatternLayers banner) {
         stack.pushPose();

@@ -17,11 +17,16 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
+public final class PlowRenderer extends DrawnRenderer<PlowEntity, EntityRenderState, PlowModel> {
 
     public PlowRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new PlowModel(renderManager.bakeLayer(AstikorCartsModelLayers.PLOW)));
         this.shadowRadius = 1.0F;
+    }
+
+    @Override
+    public EntityRenderState createRenderState() {
+        return null;
     }
 
     @Override
@@ -50,4 +55,8 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
         }
     }
 
+    @Override
+    protected void renderContents(PlowEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
+
+    }
 }

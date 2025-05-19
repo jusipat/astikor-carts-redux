@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -42,6 +43,8 @@ import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -63,6 +66,11 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         this.armor = new HumanoidModel<>(renderManager.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
         this.shadowRadius = 1.0F;
         this.armorTrimAtlas = renderManager.getModelManager().getAtlas(Sheets.ARMOR_TRIMS_SHEET);
+    }
+
+    @Override
+    public EntityRenderState createRenderState() {
+        return null;
     }
 
     @Override
@@ -311,6 +319,11 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
     @Override
     public @NotNull ResourceLocation getTextureLocation(final SupplyCartEntity entity) {
         return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + entity.getWoodType().name() + "_supply_cart.png");    }
+
+    @Override
+    protected void renderContents(EntityRenderState renderState, PoseStack stack, MultiBufferSource source, int packedLight) {
+
+    }
 
     private enum Contents {
         FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS) && AstikorCartsConfig.getClient().renderSupplyFlowers.get(), SupplyCartRenderer::renderFlowers),
