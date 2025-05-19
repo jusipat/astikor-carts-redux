@@ -2,6 +2,7 @@ package de.mennomax.astikorcarts.entity;
 
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,8 +15,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SupplyCartEntity extends AbstractCargoCart {
 
@@ -78,6 +81,26 @@ public class SupplyCartEntity extends AbstractCargoCart {
 
     @Override
     public void openCustomInventoryScreen(Player pPlayer) {
+
+    }
+
+    @Override
+    public @Nullable ResourceKey<LootTable> getContainerLootTable() {
+        return null;
+    }
+
+    @Override
+    public void setContainerLootTable(@Nullable ResourceKey<LootTable> lootTable) {
+
+    }
+
+    @Override
+    public long getContainerLootTableSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setContainerLootTableSeed(long lootTableSeed) {
 
     }
 }

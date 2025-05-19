@@ -45,13 +45,14 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Ent
         final AbstractDrawnEntity.RenderInfo info = entity.getInfo(delta);
         this.setupRotation(entity, info.getYaw(), delta, stack);
 
-        this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
-        final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
+        this.model.setupAnim(renderState);
+        //this.model.setupAnim(entity, delta, 0.0F, 0.0F, 0.0F, info.getPitch());
+        //final VertexConsumer buf = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
         this.model.renderToBuffer(stack, buf, packedLight, OverlayTexture.NO_OVERLAY);
         this.renderContents(entity, delta, stack, source, packedLight);
 
         stack.popPose();
-        super.render(renderState, poseStack, bufferSource, packedLight);
+        super.render(renderState, stack, bufferSource, packedLight);
     }
 
     protected abstract void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight);

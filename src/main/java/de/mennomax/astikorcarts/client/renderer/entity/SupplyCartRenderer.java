@@ -6,6 +6,8 @@ import com.mojang.math.Axis;
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.client.renderer.AstikorCartsModelLayers;
 import de.mennomax.astikorcarts.client.renderer.entity.model.SupplyCartModel;
+import de.mennomax.astikorcarts.client.renderer.entity.model.state.CartRenderState;
+import de.mennomax.astikorcarts.client.renderer.entity.model.state.SupplyCartRenderState;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
 import de.mennomax.astikorcarts.entity.SupplyCartEntity;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -23,6 +25,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -55,9 +58,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, SupplyCartModel> {
+public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, SupplyCartRenderState, SupplyCartModel> {
 
-    private final HumanoidModel<LivingEntity> leggings, armor;
+    private final HumanoidModel<HumanoidRenderState> leggings, armor;
     private final TextureAtlas armorTrimAtlas;
 
     public SupplyCartRenderer(final EntityRendererProvider.Context renderManager) {
@@ -69,7 +72,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
     }
 
     @Override
-    public EntityRenderState createRenderState() {
+    public SupplyCartRenderState createRenderState() {
         return null;
     }
 
@@ -249,7 +252,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
         final Item item = itemStack.getItem();
         if (!(item instanceof final ArmorItem armorItem)) return;
         final EquipmentSlot slot = getEquipmentSlotForItem(itemStack);
-        final HumanoidModel<LivingEntity> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
+        final HumanoidModel<HumanoidRenderState> m = slot == EquipmentSlot.LEGS ? this.leggings : this.armor;
         stack.mulPose(Axis.YP.rotation(ix == 0 ? (float) Math.PI * 0.5F : (float) -Math.PI * 0.5F));
         m.setAllVisible(false);
         m.leftArmPose = HumanoidModel.ArmPose.EMPTY;
@@ -326,7 +329,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
     }
 
     private enum Contents {
-        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS) && AstikorCartsConfig.getClient().renderSupplyFlowers.get(), SupplyCartRenderer::renderFlowers),
+        FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.SMALL_FLOWERS) && AstikorCartsConfig.getClient().renderSupplyFlowers.get(), SupplyCartRenderer::renderFlowers),
         PAINTINGS(s -> s.getItem() == Items.PAINTING && AstikorCartsConfig.getClient().renderSupplyPaintings.get(), SupplyCartRenderer::renderPaintings),
         WHEEL(s -> s.getItem().equals(AstikorCarts.WHEEL.get()) && AstikorCartsConfig.getClient().renderSupplyWheel.get(), SupplyCartRenderer::renderWheel),
         SUPPLIES(s -> AstikorCartsConfig.getClient().renderSupplies.get(), SupplyCartRenderer::renderSupplies),

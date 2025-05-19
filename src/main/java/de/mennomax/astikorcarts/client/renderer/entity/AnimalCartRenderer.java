@@ -1,17 +1,14 @@
 package de.mennomax.astikorcarts.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.client.renderer.AstikorCartsModelLayers;
 import de.mennomax.astikorcarts.client.renderer.entity.model.AnimalCartModel;
+import de.mennomax.astikorcarts.client.renderer.entity.model.state.AnimalCartRenderState;
 import de.mennomax.astikorcarts.entity.AnimalCartEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
-public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, EntityRenderState, AnimalCartModel> {
+public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, AnimalCartRenderState, AnimalCartModel> {
 
     public AnimalCartRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new AnimalCartModel(renderManager.bakeLayer(AstikorCartsModelLayers.ANIMAL_CART)));
@@ -23,8 +20,13 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, En
         return null;
     }
 
+//    @Override
+//    public @NotNull ResourceLocation getTextureLocation(final AnimalCartEntity entity) {
+//        return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + entity.getWoodType().name() + "_animal_cart.png");
+//    } // todo: maybe done in the RenderState now?
+
     @Override
-    protected void renderContents(EntityRenderState renderState, PoseStack stack, MultiBufferSource source, int packedLight) {
+    protected void renderContents(AnimalCartEntity entity, float delta, PoseStack stack, MultiBufferSource source, int packedLight) {
         if (entity.getBannerColor() != null) {
             stack.pushPose();
             this.model.getBody().translateAndRotate(stack);
@@ -32,10 +34,5 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, En
             this.renderBanner(entity, stack, source, delta, packedLight, entity.getBannerColor(), entity.getBannerPattern());
             stack.popPose();
         }
-    }
-
-    @Override
-    public @NotNull ResourceLocation getTextureLocation(final AnimalCartEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + entity.getWoodType().name() + "_animal_cart.png");
     }
 }

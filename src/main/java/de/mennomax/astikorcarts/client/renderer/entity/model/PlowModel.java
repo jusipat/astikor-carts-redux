@@ -1,11 +1,11 @@
 package de.mennomax.astikorcarts.client.renderer.entity.model;
 
-import de.mennomax.astikorcarts.entity.PlowEntity;
+import de.mennomax.astikorcarts.client.renderer.entity.model.state.PlowRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class PlowModel extends CartModel<PlowEntity> {
+public final class PlowModel extends CartModel<PlowRenderState> {
     private final ModelPart[] plowShaftUpper = new ModelPart[3];
     private final ModelPart[] plowShaftLower = new ModelPart[3];
 
@@ -22,13 +22,21 @@ public final class PlowModel extends CartModel<PlowEntity> {
         return this.plowShaftLower[original];
     }
 
-    @Override
-    public void setupAnim(final PlowEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
-        super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
-        for (final ModelPart renderer : this.plowShaftUpper) {
-            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
-        }
-    }
+//    @Override
+//    public void setupAnim(CartModelRenderState renderState) {
+//        super.setupAnim(renderState);
+//        for (final ModelPart renderer : this.plowShaftUpper) {
+//            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
+//        }
+//    }
+
+    //    @Override
+//    public void setupAnim(final PlowEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
+//        super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
+//        for (final ModelPart renderer : this.plowShaftUpper) {
+//            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
+//        }
+//    }
 
     public static LayerDefinition createLayer() {
         final MeshDefinition def = CartModel.createDefinition(9, 25);

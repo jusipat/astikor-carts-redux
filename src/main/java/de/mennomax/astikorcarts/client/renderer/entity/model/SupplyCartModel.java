@@ -1,11 +1,11 @@
 package de.mennomax.astikorcarts.client.renderer.entity.model;
 
-import de.mennomax.astikorcarts.entity.SupplyCartEntity;
+import de.mennomax.astikorcarts.client.renderer.entity.model.state.SupplyCartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class SupplyCartModel extends CartModel<SupplyCartEntity> {
+public final class SupplyCartModel extends CartModel<SupplyCartRenderState> {
     private final ModelPart flowerBasket;
 
     public SupplyCartModel(final ModelPart root) {

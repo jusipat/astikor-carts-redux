@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -28,8 +29,10 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
@@ -184,6 +187,26 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public void openCustomInventoryScreen(Player pPlayer) {
+
+    }
+
+    @Override
+    public @Nullable ResourceKey<LootTable> getContainerLootTable() {
+        return null;
+    }
+
+    @Override
+    public void setContainerLootTable(@Nullable ResourceKey<LootTable> lootTable) {
+
+    }
+
+    @Override
+    public long getContainerLootTableSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setContainerLootTableSeed(long lootTableSeed) {
 
     }
 }

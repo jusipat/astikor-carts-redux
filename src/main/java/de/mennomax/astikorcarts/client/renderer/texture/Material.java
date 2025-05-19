@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 
 @SuppressWarnings("unused")
 public class Material {
@@ -23,10 +22,6 @@ public class Material {
     private final int size;
 
     private final ObjectList<Fill> fills = new ObjectArrayList<>();
-
-    public Material(ResourceLocation sprite, final int size) {
-        this(Pair.of(InventoryMenu.BLOCK_ATLAS, sprite), size);
-    }
 
     public Material(final Pair<ResourceLocation, ResourceLocation> sprite, final int size) {
         this.sprite = sprite;

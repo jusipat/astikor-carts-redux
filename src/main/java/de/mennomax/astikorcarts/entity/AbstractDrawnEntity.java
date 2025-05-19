@@ -704,48 +704,4 @@ public abstract class AbstractDrawnEntity extends Entity {
         //if (level().isClientSide && !AstikorCartsConfig.getClient().creakingSounds.get() || random.nextFloat() < 0.7f) return;
         //this.playSound(AstikorCarts.CREAK_SOUND, 0.75f + random.nextFloat() * 0.25f, 1);
     }
-
-    public class RenderInfo {
-        final float delta;
-        Vec3 target;
-        float yaw = Float.NaN;
-        float pitch = Float.NaN;
-
-        public RenderInfo(final float delta) {
-            this.delta = delta;
-        }
-
-        public Vec3 getTarget() {
-            if (this.target == null) {
-                if (AbstractDrawnEntity.this.pulling == null) {
-                    this.target = AbstractDrawnEntity.this.getViewVector(this.delta);
-                } else {
-                    this.target = AbstractDrawnEntity.this.getRelativeTargetVec(this.delta);
-                }
-            }
-            return this.target;
-        }
-
-        public float getYaw() {
-            if (Float.isNaN(this.yaw)) {
-                if (AbstractDrawnEntity.this.pulling == null) {
-                    this.yaw = Mth.lerp(this.delta, AbstractDrawnEntity.this.yRotO, AbstractDrawnEntity.this.getYRot());
-                } else {
-                    this.yaw = AbstractDrawnEntity.getYaw(this.getTarget());
-                }
-            }
-            return this.yaw;
-        }
-
-        public float getPitch() {
-            if (Float.isNaN(this.pitch)) {
-                if (AbstractDrawnEntity.this.pulling == null) {
-                    this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
-                } else {
-                    this.pitch = AbstractDrawnEntity.getPitch(this.target);
-                }
-            }
-            return this.pitch;
-        }
-    }
 }
