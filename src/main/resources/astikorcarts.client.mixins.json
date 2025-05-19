@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "de.mennomax.astikorcarts.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ModelPartMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+  ]
+}

@@ -1,0 +1,35 @@
+package de.mennomax.astikorcarts.entity;
+
+import de.mennomax.astikorcarts.world.AstikorWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+public class PostilionEntity extends DummyLivingEntity {
+    public PostilionEntity(EntityType<? extends LivingEntity> type, Level world) {
+        super(type, world);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide) {
+            if (this.getCoachman() == null) {
+                this.discard();
+            }
+        }
+    }
+
+    @Nullable
+    private LivingEntity getCoachman() {
+        final Entity mount = this.getVehicle();
+        if (mount != null) {
+            return AstikorWorld.get(this.level()).getDrawn(mount)
+                    .map(AbstractDrawnEntity::getControllingPassenger).orElse(null);
+        }
+        return null;
+    }
+
+}

@@ -1,0 +1,16 @@
+{
+  "item.astikorcarts.supply_cart": "Телега",
+  "item.astikorcarts.plow": "Плуг",
+  "item.astikorcarts.wheel": "Колесо",
+  "item.astikorcarts.animal_cart": "Телега для мобов",
+  "itemGroup.astikorcarts": "AstikorCarts",
+  "entity.astikorcarts.supply_cart": "Телега",
+  "entity.astikorcarts.plow": "Плуг",
+  "entity.astikorcarts.animal_cart": "Телега для мобов",
+  "key.categories.astikorcarts": "AstikorCarts",
+  "key.astikorcarts.desc": "Клавиша действия",
+  "subtitles.astikorcarts.cart.attached": "Телега прикрепляется",
+  "subtitles.astikorcarts.cart.detached": "Телега открепляется",
+  "subtitles.astikorcarts.cart.placed": "Телега расположена",
+  "stat.astikorcarts.cart_one_cm": "Проеханная с телегой дистанция"
+}
