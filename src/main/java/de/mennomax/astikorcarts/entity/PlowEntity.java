@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
 import de.mennomax.astikorcarts.container.PlowMenu;
+import de.mennomax.astikorcarts.item.AstikorItems;
 import de.mennomax.astikorcarts.util.AstikorItemUtil;
 import de.mennomax.astikorcarts.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
@@ -141,7 +142,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorCarts.PLOW.get(this.getWoodType()).asItem();
+        return AstikorItems.PLOW.get(this.getWoodType()).asItem();
     }
 
     @Override

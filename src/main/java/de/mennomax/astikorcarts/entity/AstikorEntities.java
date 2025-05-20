@@ -11,6 +11,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.function.Supplier;
+
 public class AstikorEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, AstikorCarts.ID);
@@ -21,35 +23,21 @@ public class AstikorEntities {
     public static ResourceKey<EntityType<?>> POSTILION_ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.withDefaultNamespace("postilion"));
 
 
+    public static final Supplier<EntityType<SupplyCartEntity>> SUPPLY_CART_ENTITY =
+            ENTITY_TYPES.register("supply_cart", () -> EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC)
+                    .sized(1.5f, 1.4f).build(SUPPLY_CART_KEY));
 
-    public static final EntityType<SupplyCartEntity> SUPPLY_CART_ENTITY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "supply_cart"),
-            EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC).sized(1.5f, 1.4f).build(SUPPLY_CART_KEY)
-    );
+    public static final Supplier<EntityType<AnimalCartEntity>> ANIMAL_CART_ENTITY =
+            ENTITY_TYPES.register("animal_cart", () -> EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f).build(ANIMAL_CART_ENTITY_KEY));
 
+    public static final Supplier<EntityType<PlowEntity>> PLOW_ENTITY =
+            ENTITY_TYPES.register("plow", () -> EntityType.Builder.of(PlowEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f).build(PLOW_ENTITY_KEY));
 
-    public static final EntityType<AnimalCartEntity> ANIMAL_CART_ENTITY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "animal_cart"),
-            EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build(ANIMAL_CART_ENTITY_KEY)
-    );
-
-    public static final EntityType<PlowEntity> PLOW_ENTITY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "plow"),
-            EntityType.Builder.of(PlowEntity::new, MobCategory.MISC).sized(1.3f, 1.4f).build(PLOW_ENTITY_KEY)
-    );
-
-    public static final EntityType<PostilionEntity> POSTILION_ENTITY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "postilion"),
-            EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
-                    .sized(0.25f, 0.25f)
-                    .noSummon()
-                    .noSave()
-                    .build(POSTILION_ENTITY_KEY)
-    );
+    public static final Supplier<EntityType<PostilionEntity>> POSTILION_ENTITY =
+            ENTITY_TYPES.register("postilion", () -> EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f).noSummon().noSave().build(POSTILION_ENTITY_KEY));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

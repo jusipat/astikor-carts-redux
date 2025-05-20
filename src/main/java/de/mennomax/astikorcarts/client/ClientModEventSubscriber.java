@@ -28,19 +28,19 @@ public class ClientModEventSubscriber {
     public static void onClientSetup(FMLClientSetupEvent event) {
         // Registering entities here
         EntityRenderers.register(
-                AstikorEntities.ANIMAL_CART_ENTITY,
+                AstikorEntities.ANIMAL_CART_ENTITY.get(),
                 AnimalCartRenderer::new
         );
         EntityRenderers.register(
-                AstikorEntities.SUPPLY_CART_ENTITY,
+                AstikorEntities.SUPPLY_CART_ENTITY.get(),
                 SupplyCartRenderer::new
         );
         EntityRenderers.register(
-                AstikorEntities.PLOW_ENTITY,
+                AstikorEntities.PLOW_ENTITY.get(),
                 PlowRenderer::new
         );
         EntityRenderers.register(
-                AstikorEntities.POSTILION_ENTITY,
+                AstikorEntities.POSTILION_ENTITY.get(),
                 PostilionRenderer::new
         );
     }

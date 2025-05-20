@@ -2,6 +2,7 @@ package de.mennomax.astikorcarts.entity;
 
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
+import de.mennomax.astikorcarts.item.AstikorItems;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +32,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = AstikorEntities.POSTILION_ENTITY.create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
+            final PostilionEntity postilion = AstikorEntities.POSTILION_ENTITY.get().create(this.level(), EntitySpawnReason.SPAWN_ITEM_USE);
             if (postilion != null) {
                 postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
                 if (postilion.startRiding(pulling)) {
@@ -109,6 +110,6 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorCarts.ANIMAL_CART.get(this.getWoodType()).asItem();
+        return AstikorItems.ANIMAL_CART.get(this.getWoodType()).asItem();
     }
 }

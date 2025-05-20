@@ -31,6 +31,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -58,15 +59,16 @@ public final class AstikorCarts {
         // registrar.playToServer(RequestCartUpdateMessage.TYPE, RequestCartUpdateMessage.STREAM_CODEC, RequestCartUpdateMessage::handle); TODO: add this packet
     }
 
+
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(AstikorItems.WHEEL);
-            SUPPLY_CART.values().forEach(event::accept);
-            ANIMAL_CART.values().forEach(event::accept);
-            PLOW.values().forEach(event::accept);
-            HAND_CART.values().forEach(event::accept);
-            REAPER.values().forEach(event::accept);
-            SEED_DRILL.values().forEach(event::accept);
+            AstikorItems.SUPPLY_CART.values().forEach(event::accept);
+            AstikorItems.ANIMAL_CART.values().forEach(event::accept);
+            AstikorItems.PLOW.values().forEach(event::accept);
+            //HAND_CART.values().forEach(event::accept);
+            //REAPER.values().forEach(event::accept);
+            //SEED_DRILL.values().forEach(event::accept);
         }
     }
 
@@ -104,13 +106,14 @@ public final class AstikorCarts {
 
     public AstikorCarts(IEventBus bus) {
         bus.addListener(this::setup);
+        //NeoForge.EVENT_BUS.register(this);
 
-        AstikorEntities.register(bus);
         AstikorItems.register(bus);
-        init(); // todo: busted af, fix
+        AstikorEntities.register(bus);
+        //init(); // todo: busted af, fix
         SoundEvents.SOUND_EVENTS.register(bus);
         ACStats.AC_STATS.register(bus);
-        bus.<EntityAttributeCreationEvent>addListener(e -> {e.put(AstikorEntities.POSTILION_ENTITY, LivingEntity.createLivingAttributes().build());});
+        bus.<EntityAttributeCreationEvent>addListener(e -> {e.put(AstikorEntities.POSTILION_ENTITY.get(), LivingEntity.createLivingAttributes().build());});
         bus.addListener(this::addCreative);
     }
     private void setup(final FMLCommonSetupEvent event) {

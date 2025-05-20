@@ -2,6 +2,7 @@ package de.mennomax.astikorcarts.entity;
 
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
+import de.mennomax.astikorcarts.item.AstikorItems;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +29,7 @@ public class SupplyCartEntity extends AbstractCargoCart {
 
     @Override
     public Item getCartItem() {
-        return AstikorCarts.SUPPLY_CART.get(this.getWoodType()).asItem();
+        return AstikorItems.SUPPLY_CART.get(this.getWoodType()).asItem();
     }
 
     @Override
