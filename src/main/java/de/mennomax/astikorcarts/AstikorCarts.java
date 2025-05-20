@@ -1,5 +1,6 @@
 package de.mennomax.astikorcarts;
 
+import de.mennomax.astikorcarts.client.AstikorTextures;
 import de.mennomax.astikorcarts.container.PlowMenu;
 import de.mennomax.astikorcarts.entity.*;
 import de.mennomax.astikorcarts.item.AstikorItems;
@@ -63,9 +64,7 @@ public final class AstikorCarts {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(AstikorItems.WHEEL);
-            AstikorItems.SUPPLY_CART.values().forEach(event::accept);
-            AstikorItems.ANIMAL_CART.values().forEach(event::accept);
-            AstikorItems.PLOW.values().forEach(event::accept);
+            event.accept(AstikorItems.OAK_SUPPLY_CART);
             //HAND_CART.values().forEach(event::accept);
             //REAPER.values().forEach(event::accept);
             //SEED_DRILL.values().forEach(event::accept);
