@@ -1,20 +1,19 @@
 package de.mennomax.astikorcarts.client.renderer.entity.model;
 
-import de.mennomax.astikorcarts.client.renderer.entity.model.state.SupplyCartRenderState;
+import de.mennomax.astikorcarts.client.renderer.entity.CargoCartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class SupplyCartModel extends CartModel<SupplyCartRenderState> {
-    private final ModelPart flowerBasket;
+public final class SupplyCartModel extends CargoCartModel<CargoCartRenderState> {
 
     public SupplyCartModel(final ModelPart root) {
         super(root);
-        this.flowerBasket = root.getChild("flowerBasket");
     }
 
-    public ModelPart getFlowerBasket() {
-        return this.flowerBasket;
+    @Override
+    public void setupAnim(CargoCartRenderState state) {
+        super.setupAnim(state);
     }
 
     public static LayerDefinition createLayer() {
@@ -65,19 +64,6 @@ public final class SupplyCartModel extends CartModel<SupplyCartRenderState> {
         boardsRear[1] = new EasyMeshBuilder("boards_rear_1", 42, 0);
         boardsRear[1].addBox(-12.0F, -12.0F, 13.5F, 2, 11, 1);
 
-        final EasyMeshBuilder body = CartModel.createBody(9);
-        body.addChild(axis);
-        body.addChild(shaft);
-        body.addChild(boardBottom);
-        body.addChild(boardFront);
-        body.addChild(boardsRear[0]);
-        body.addChild(boardsRear[1]);
-        body.addChild(boardsSide[0]);
-        body.addChild(boardsSide[1]);
-        body.addChild(boardsSide[2]);
-        body.addChild(boardsSide[3]);
-        body.build(def.getRoot());
-
         final EasyMeshBuilder flowerBasket = new EasyMeshBuilder("flowerBasket");
         flowerBasket.setTextureOffset(-17, 45).addBox(-8.0F, -6.0F, -11.5F, 16.0F, 1.0F, 17.0F);
         flowerBasket.setTextureOffset(16, 45).addBox(-10.0F, -7.0F, 5.5F, 20.0F, 5.0F, 2.0F);
@@ -94,6 +80,19 @@ public final class SupplyCartModel extends CartModel<SupplyCartRenderState> {
         rightSide.addBox(-11.5F, -7.0F, 8.0F, 17.0F, 5.0F, 2.0F);
         flowerBasket.addChild(rightSide);
         flowerBasket.build(def.getRoot());
+
+        final EasyMeshBuilder body = CartModel.createBody(9);
+        body.addChild(axis);
+        body.addChild(shaft);
+        body.addChild(boardBottom);
+        body.addChild(boardFront);
+        body.addChild(boardsRear[0]);
+        body.addChild(boardsRear[1]);
+        body.addChild(boardsSide[0]);
+        body.addChild(boardsSide[1]);
+        body.addChild(boardsSide[2]);
+        body.addChild(boardsSide[3]);
+        body.build(def.getRoot());
 
         return LayerDefinition.create(def, 64, 64);
     }

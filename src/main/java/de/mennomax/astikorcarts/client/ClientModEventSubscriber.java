@@ -10,6 +10,7 @@ import de.mennomax.astikorcarts.client.renderer.entity.SupplyCartRenderer;
 import de.mennomax.astikorcarts.client.renderer.entity.model.AnimalCartModel;
 import de.mennomax.astikorcarts.client.renderer.entity.model.PlowModel;
 import de.mennomax.astikorcarts.client.renderer.entity.model.SupplyCartModel;
+import de.mennomax.astikorcarts.entity.AstikorEntities;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,19 +28,19 @@ public class ClientModEventSubscriber {
     public static void onClientSetup(FMLClientSetupEvent event) {
         // Registering entities here
         EntityRenderers.register(
-                AstikorCarts.EntityTypes.ANIMAL_CART.get(),
+                AstikorEntities.ANIMAL_CART_ENTITY,
                 AnimalCartRenderer::new
         );
         EntityRenderers.register(
-                AstikorCarts.EntityTypes.SUPPLY_CART.get(),
+                AstikorEntities.SUPPLY_CART_ENTITY,
                 SupplyCartRenderer::new
         );
         EntityRenderers.register(
-                AstikorCarts.EntityTypes.PLOW.get(),
+                AstikorEntities.PLOW_ENTITY,
                 PlowRenderer::new
         );
         EntityRenderers.register(
-                AstikorCarts.EntityTypes.POSTILION.get(),
+                AstikorEntities.POSTILION_ENTITY,
                 PostilionRenderer::new
         );
     }

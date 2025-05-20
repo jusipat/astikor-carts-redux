@@ -14,6 +14,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
@@ -46,7 +47,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -80,6 +80,10 @@ public abstract class AbstractDrawnEntity extends Entity {
     protected double spacing = 1.7D;
     public Entity pulling;
     protected AbstractDrawnEntity drawn;
+    private float coachmanXxa = 0;
+    private float coachmanZza = 0;
+    private float coachmanXRot = 0;
+    private float coachmanYRot = 0;
 
     public AbstractDrawnEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
@@ -91,12 +95,6 @@ public abstract class AbstractDrawnEntity extends Entity {
     public float maxUpStep() {
         return 1.2f;
     }
-
-    //Client
-//    @Override
-//    public @NotNull AABB getBoundingBoxForCulling() {
-//        return this.getBoundingBox().inflate(3.0D, 3.0D, 3.0D);
-//    }
 
     @Override
     public void tick() {
@@ -287,6 +285,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
     }
 
+
     private void playAttachSound() {
         this.playSound(AstikorCarts.SoundEvents.CART_ATTACHED.get(), 0.2F, 1.0F);
     }
@@ -409,9 +408,8 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     protected abstract AstikorCartsConfig.CartConfig getConfig();
 
-
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel serverLevel, final DamageSource source, final float amount) {
         if (this.isInvulnerableToBase(source)) {
             return false;
         } else if (!this.level().isClientSide && this.isAlive()) {
@@ -425,7 +423,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
             final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild;
-            if (flag || this.getDamageTaken() > getConfig().destroyDamage.get() * 10) {
+            if (flag || this.getDamageTaken() > 40.0F) {
                 this.onDestroyed(source, flag);
                 this.setPulling(null);
                 this.discard();
@@ -451,7 +449,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 this.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
                 this.setBanner(banner);
             }
-            return InteractionResult.SUCCESS_SERVER;
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -462,10 +460,11 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     public void onDestroyed(final DamageSource source, final boolean byCreativePlayer) {
-        if (this.getServer().overworld().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
+        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             if (!byCreativePlayer) {
-                this.spawnAtLocation((ServerLevel)this.level(), this.getCartItem());
-                this.spawnAtLocation((ServerLevel)this.level(), this.getBanner());
+                this.spawnAtLocation(serverLevel, this.getCartItem());
+                this.spawnAtLocation(serverLevel, this.getBanner());
             }
             this.onDestroyedAndDoDrops(source);
         }
@@ -607,14 +606,6 @@ public abstract class AbstractDrawnEntity extends Entity {
         return this.entityData.get(BANNER);
     }
 
-    public void setWoodType(WoodType woodType) {
-        this.entityData.set(WOOD_TYPE, woodType.name());
-    }
-
-    public WoodType getWoodType(){
-        return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
-    }
-
     public DyeColor getBannerColor() {
         final ItemStack banner = this.getBanner();
         if (banner.getItem() instanceof BannerItem bannerItem) {
@@ -642,6 +633,46 @@ public abstract class AbstractDrawnEntity extends Entity {
     @Override
     public boolean isPickable() {
         return true;
+    }
+
+    public float getCoachmanXxa() {
+        return coachmanXxa;
+    }
+
+    public void setCoachmanXxa(float coachmanXxa) {
+        this.coachmanXxa = coachmanXxa;
+    }
+
+    public float getCoachmanZza() {
+        return coachmanZza;
+    }
+
+    public void setCoachmanZza(float coachmanZza) {
+        this.coachmanZza = coachmanZza;
+    }
+
+    public float getCoachmanXRot() {
+        return coachmanXRot;
+    }
+
+    public void setCoachmanXRot(float coachmanXRot) {
+        this.coachmanXRot = coachmanXRot;
+    }
+
+    public float getCoachmanYRot() {
+        return coachmanYRot;
+    }
+
+    public void setCoachmanYRot(float coachmanYRot) {
+        this.coachmanYRot = coachmanYRot;
+    }
+
+    public void setWoodType(WoodType type) {
+        this.entityData.set(WOOD_TYPE, type.name());
+    }
+
+    public WoodType getWoodType(){
+        return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
     }
 
     @Override
@@ -678,6 +709,9 @@ public abstract class AbstractDrawnEntity extends Entity {
         compound.putString("WoodType", getWoodType().name());
     }
 
+    public RenderInfo getInfo(final float delta) {
+        return new RenderInfo(delta);
+    }
 
     public void toggleSlow() {
         final Entity pulling = this.pulling;
@@ -696,9 +730,47 @@ public abstract class AbstractDrawnEntity extends Entity {
         }
     }
 
-    @Override
-    protected void playStepSound(BlockPos blockPos, BlockState blockState) {
-        //if (level().isClientSide && !AstikorCartsConfig.getClient().creakingSounds.get() || random.nextFloat() < 0.7f) return;
-        //this.playSound(AstikorCarts.CREAK_SOUND, 0.75f + random.nextFloat() * 0.25f, 1);
+    public class RenderInfo {
+        final float delta;
+        Vec3 target;
+        float yaw = Float.NaN;
+        float pitch = Float.NaN;
+
+        public RenderInfo(final float delta) {
+            this.delta = delta;
+        }
+
+        public Vec3 getTarget() {
+            if (this.target == null) {
+                if (AbstractDrawnEntity.this.pulling == null) {
+                    this.target = AbstractDrawnEntity.this.getViewVector(this.delta);
+                } else {
+                    this.target = AbstractDrawnEntity.this.getRelativeTargetVec(this.delta);
+                }
+            }
+            return this.target;
+        }
+
+        public float getYaw() {
+            if (Float.isNaN(this.yaw)) {
+                if (AbstractDrawnEntity.this.pulling == null) {
+                    this.yaw = Mth.lerp(this.delta, AbstractDrawnEntity.this.yRotO, AbstractDrawnEntity.this.getYRot());
+                } else {
+                    this.yaw = AbstractDrawnEntity.getYaw(this.getTarget());
+                }
+            }
+            return this.yaw;
+        }
+
+        public float getPitch() {
+            if (Float.isNaN(this.pitch)) {
+                if (AbstractDrawnEntity.this.pulling == null) {
+                    this.pitch = Mth.lerp(this.delta, AbstractDrawnEntity.this.xRotO, AbstractDrawnEntity.this.getXRot());
+                } else {
+                    this.pitch = AbstractDrawnEntity.getPitch(this.getTarget());
+                }
+            }
+            return this.pitch;
+        }
     }
 }

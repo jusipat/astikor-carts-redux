@@ -1,6 +1,6 @@
 package de.mennomax.astikorcarts.client.renderer.entity.model;
 
-import de.mennomax.astikorcarts.client.renderer.entity.model.state.PlowRenderState;
+import de.mennomax.astikorcarts.client.renderer.entity.PlowRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
@@ -22,21 +22,13 @@ public final class PlowModel extends CartModel<PlowRenderState> {
         return this.plowShaftLower[original];
     }
 
-//    @Override
-//    public void setupAnim(CartModelRenderState renderState) {
-//        super.setupAnim(renderState);
-//        for (final ModelPart renderer : this.plowShaftUpper) {
-//            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
-//        }
-//    }
-
-    //    @Override
-//    public void setupAnim(final PlowEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
-//        super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
-//        for (final ModelPart renderer : this.plowShaftUpper) {
-//            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
-//        }
-//    }
+    @Override
+    public void setupAnim(PlowRenderState state) {
+        super.setupAnim(state);
+        for (final ModelPart renderer : this.plowShaftUpper) {
+            renderer.xRot = (float) (state.plowing ? Math.PI / 4.0D - Math.toRadians(state.pitch) : Math.PI / 2.5D);
+        }
+    }
 
     public static LayerDefinition createLayer() {
         final MeshDefinition def = CartModel.createDefinition(9, 25);

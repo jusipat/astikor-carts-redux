@@ -1,0 +1,13 @@
+package de.mennomax.astikorcarts.client.renderer.entity;
+
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+public class PlowRenderState extends CartRenderState {
+    public boolean plowing;
+    public NonNullList<ItemStack> items;
+    public NonNullList<ItemStackRenderState> itemStates;
+    public Level level;
+}

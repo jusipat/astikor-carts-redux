@@ -1,15 +1,14 @@
 package de.mennomax.astikorcarts;
 
 import de.mennomax.astikorcarts.container.PlowMenu;
-import de.mennomax.astikorcarts.entity.AnimalCartEntity;
-import de.mennomax.astikorcarts.entity.PlowEntity;
-import de.mennomax.astikorcarts.entity.PostilionEntity;
-import de.mennomax.astikorcarts.entity.SupplyCartEntity;
+import de.mennomax.astikorcarts.entity.*;
+import de.mennomax.astikorcarts.item.AstikorItems;
 import de.mennomax.astikorcarts.item.CartItem;
 import de.mennomax.astikorcarts.network.clientbound.UpdateDrawnMessage;
 import de.mennomax.astikorcarts.network.serverbound.ActionKeyMessage;
 import de.mennomax.astikorcarts.network.serverbound.OpenSupplyCartMessage;
 import de.mennomax.astikorcarts.network.serverbound.ToggleSlowMessage;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -58,61 +58,15 @@ public final class AstikorCarts {
         // registrar.playToServer(RequestCartUpdateMessage.TYPE, RequestCartUpdateMessage.STREAM_CODEC, RequestCartUpdateMessage::handle); TODO: add this packet
     }
 
-    private static final BiFunction<WoodType, String, Supplier<CartItem>> CART_ITEM_SUPPLIER =
-            (woodType, cartType) -> () -> new CartItem(new Item.Properties().stacksTo(1), woodType, cartType);
-    public static final Map<WoodType, DeferredItem<CartItem>> SUPPLY_CART = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<CartItem>> HAND_CART = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<CartItem>> PLOW = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<CartItem>> ANIMAL_CART = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<CartItem>> REAPER = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<CartItem>> SEED_DRILL = new HashMap<>();
-
-    public static final WoodType[] VANILLA_WOOD_TYPES = {
-            WoodType.OAK,
-            WoodType.SPRUCE,
-            WoodType.BIRCH,
-            WoodType.ACACIA,
-            WoodType.CHERRY,
-            WoodType.JUNGLE,
-            WoodType.DARK_OAK,
-            WoodType.CRIMSON,
-            WoodType.WARPED,
-            WoodType.MANGROVE,
-            WoodType.BAMBOO
-    };
-
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ID);
-    public static final DeferredItem<Item> WHEEL = ITEMS.register("wheel", () -> new Item(new Item.Properties()));
-    static {
-        for (WoodType woodType : VANILLA_WOOD_TYPES) {
-            SUPPLY_CART.put(woodType,
-                    ITEMS.register(woodType.name() + "_supply_cart",
-                            CART_ITEM_SUPPLIER.apply(woodType, "supply_cart")));
-            PLOW.put(woodType,
-                    ITEMS.register(woodType.name() + "_plow",
-                            CART_ITEM_SUPPLIER.apply(woodType, "_plow")));
-            ANIMAL_CART.put(woodType,
-                    ITEMS.register(woodType.name() + "_animal_cart",
-                            CART_ITEM_SUPPLIER.apply(woodType, "_animal_cart")));
-
-//            ITEMS.register(woodType.name() + "_supply_cart", SUPPLY_CART.get(woodType));
-//            ITEMS.register(woodType.name() + "_plow", PLOW.get(woodType));
-//            ITEMS.register(woodType.name() + "_animal_cart", ANIMAL_CART.get(woodType));
-            //ITEMS.register(woodType.name() + "_hand_cart"), HAND_CART.get(woodType));
-            //R.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(ID, woodType.name() + "_reaper"), REAPER.get(woodType));
-            //R.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(ID, woodType.name() + "_seed_drill"), SEED_DRILL.get(woodType));
-        }
-    }
-
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(WHEEL.get());
-            SUPPLY_CART.values().forEach(deferredItem -> event.accept(deferredItem.get()));
-            ANIMAL_CART.values().forEach(deferredItem -> event.accept(deferredItem.get()));
-            PLOW.values().forEach(deferredItem -> event.accept(deferredItem.get()));
-            HAND_CART.values().forEach(deferredItem -> event.accept(deferredItem.get()));
-            REAPER.values().forEach(deferredItem -> event.accept(deferredItem.get()));
-            SEED_DRILL.values().forEach(deferredItem -> event.accept(deferredItem.get()));
+            event.accept(AstikorItems.WHEEL);
+            SUPPLY_CART.values().forEach(event::accept);
+            ANIMAL_CART.values().forEach(event::accept);
+            PLOW.values().forEach(event::accept);
+            HAND_CART.values().forEach(event::accept);
+            REAPER.values().forEach(event::accept);
+            SEED_DRILL.values().forEach(event::accept);
         }
     }
 
@@ -134,34 +88,6 @@ public final class AstikorCarts {
         }
     }
 
-    public static final class EntityTypes {
-        private EntityTypes() {
-        }
-        public static final DeferredRegister<EntityType<?>> R = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, ID);
-
-        public static final Supplier<EntityType<SupplyCartEntity>> SUPPLY_CART;
-        public static final Supplier<EntityType<PlowEntity>> PLOW;
-        public static final Supplier<EntityType<AnimalCartEntity>> ANIMAL_CART;
-        public static final Supplier<EntityType<PostilionEntity>> POSTILION;
-
-        static {
-            SUPPLY_CART = R.register("supply_cart", () -> EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC)
-                    .sized(1.5F, 1.4F)
-                    .build(ID + ":supply_cart"));
-            PLOW = R.register("plow", () -> EntityType.Builder.of(PlowEntity::new, MobCategory.MISC)
-                    .sized(1.3F, 1.4F)
-                    .build(ID + ":plow"));
-            ANIMAL_CART = R.register("animal_cart", () -> EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC)
-                    .sized(1.3F, 1.4F)
-                    .build(ID + ":animal_cart"));
-            POSTILION = R.register("postilion", () -> EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
-                    .noSummon()
-                    .noSave()
-                    .build(ID + ":postilion"));
-        }
-    }
-
     public static final class SoundEvents {
 
         private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, ID);
@@ -177,13 +103,14 @@ public final class AstikorCarts {
     }
 
     public AstikorCarts(IEventBus bus) {
-        bus.addListener(EventPriority.NORMAL, this::setup);
-        ITEMS.register(bus);
-        EntityTypes.R.register(bus);
+        bus.addListener(this::setup);
+
+        AstikorEntities.register(bus);
+        AstikorItems.register(bus);
+        init(); // todo: busted af, fix
         SoundEvents.SOUND_EVENTS.register(bus);
-        //ContainerTypes.R.register(bus);
         ACStats.AC_STATS.register(bus);
-        bus.<EntityAttributeCreationEvent>addListener(e -> {e.put(EntityTypes.POSTILION.get(), LivingEntity.createLivingAttributes().build());});
+        bus.<EntityAttributeCreationEvent>addListener(e -> {e.put(AstikorEntities.POSTILION_ENTITY, LivingEntity.createLivingAttributes().build());});
         bus.addListener(this::addCreative);
     }
     private void setup(final FMLCommonSetupEvent event) {

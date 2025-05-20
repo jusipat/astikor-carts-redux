@@ -5,11 +5,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 
-public final class AstikorCartsConfig { // TODO: get config working again!
+public final class AstikorCartsConfig {
     public static Common get() {
         return Holder.COMMON;
     }
-    
 
     public static ModConfigSpec spec() {
         return Holder.COMMON_SPEC;
@@ -47,6 +46,7 @@ public final class AstikorCartsConfig { // TODO: get config working again!
         public final ModConfigSpec.BooleanValue renderSupplyFlowers;
         public final ModConfigSpec.BooleanValue renderSupplyPaintings;
         public final ModConfigSpec.BooleanValue renderSupplyWheel;
+        public final ModConfigSpec.ConfigValue<ArrayList<String>> renderBlacklist;
 
         Client(final ModConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
@@ -56,6 +56,12 @@ public final class AstikorCartsConfig { // TODO: get config working again!
             this.renderSupplyFlowers = builder.comment("Falls back to rendering as items if false").define("render_supply_flowers", true);
             this.renderSupplyPaintings = builder.comment("Falls back to rendering as items if false").define("render_supply_paintings", true);
             this.renderSupplyWheel = builder.comment("Falls back to rendering as items if false").define("render_supply_wheel", true);
+            ArrayList<String> blacklist = new ArrayList<>();
+            blacklist.add("minecraft:trident");
+            blacklist.add("minecraft:decorated_pot");
+            blacklist.add("#minecraft:buttons");
+            blacklist.add("#minecraft:banners");
+            this.renderBlacklist = builder.comment("Disables rendering for these blocks and items").define("render_item_blacklist", blacklist);
         }
 
     }
@@ -65,8 +71,8 @@ public final class AstikorCartsConfig { // TODO: get config working again!
         public final CartConfig animalCart;
         public final CartConfig plow;
         public final CartConfig handCart;
-        public final CartConfig reaper;
         public final CartConfig seedDrill;
+        public final CartConfig reaper;
 
         Common(final ModConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
@@ -75,9 +81,9 @@ public final class AstikorCartsConfig { // TODO: get config working again!
             this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
             ArrayList<String> list = new ArrayList<>();
             list.add("minecraft:player");
-            this.handCart = new CartConfig(builder, "hand_cart", "The Hand Cart, a player pulled cart that stores items", list, 0);
-            this.reaper = new CartConfig(builder, "reaper", "The Reaper, a cart that harvests crops");
-            this.seedDrill = new CartConfig(builder, "seed_drill", "The Seed Drill, a cart that plants crops");
+            this.handCart = new CartConfig(builder, "handCart", "The Hand Cart, a player pulled cart that stores items", list, 0);
+            this.seedDrill = new CartConfig(builder, "seedDrill", "The Seed Drill, a type of cart that plants crops");
+            this.reaper = new CartConfig(builder, "reaper", "The Reaper, a type of cart that harvests crops");
             builder.pop();
         }
     }
@@ -86,7 +92,6 @@ public final class AstikorCartsConfig { // TODO: get config working again!
         public final ModConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
         public final ModConfigSpec.DoubleValue slowSpeed;
         public final ModConfigSpec.DoubleValue pullSpeed;
-        public final ModConfigSpec.IntValue destroyDamage;
 
         CartConfig(final ModConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
@@ -104,8 +109,6 @@ public final class AstikorCartsConfig { // TODO: get config working again!
                     .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                     .defineInRange("pull_speed", 0.0D, -1.0D, defaultPullSpeed);
-            this.destroyDamage = builder.comment("Damage needed to destroy the cart. Damage accumulates over time but decays at a rate of 2 damage per second.")
-                    .defineInRange("destroy_damage", 4, 1, 100);
             builder.pop();
         }
     }

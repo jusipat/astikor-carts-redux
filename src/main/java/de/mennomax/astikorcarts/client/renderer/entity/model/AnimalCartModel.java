@@ -1,11 +1,11 @@
 package de.mennomax.astikorcarts.client.renderer.entity.model;
 
-import de.mennomax.astikorcarts.client.renderer.entity.model.state.AnimalCartRenderState;
+import de.mennomax.astikorcarts.client.renderer.entity.CartRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public final class AnimalCartModel extends CartModel<AnimalCartRenderState> {
+public final class AnimalCartModel extends CartModel<CartRenderState> {
     public AnimalCartModel(final ModelPart root) {
         super(root);
     }
