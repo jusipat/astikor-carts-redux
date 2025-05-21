@@ -49,7 +49,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowRenderStat
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(PlowRenderState state) {
-        return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + state.woodType + "_plow.png");
+        return ResourceLocation.fromNamespaceAndPath(AstikorCarts.ID, "textures/entity/" + state.woodType.name() + "_plow.png");
     }
 
     @Override

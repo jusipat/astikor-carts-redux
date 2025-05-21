@@ -15,10 +15,8 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-
-import static net.neoforged.neoforge.client.ClientHooks.registerLayerDefinition;
 
 @EventBusSubscriber(
         bus = EventBusSubscriber.Bus.MOD,
@@ -44,13 +42,15 @@ public class ClientModEventSubscriber {
                 PostilionRenderer::new
         );
     }
+
     @SubscribeEvent
-    public static void registerAdditional(ModelEvent.RegisterAdditional event) {
-        // Refactored model registering, this seems to work!
-        registerLayerDefinition(AstikorCartsModelLayers.PLOW, PlowModel::createLayer);
-        registerLayerDefinition(AstikorCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
-        registerLayerDefinition(AstikorCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        // Add our layer here.
+        event.registerLayerDefinition(AstikorCartsModelLayers.PLOW, PlowModel::createLayer);
+        event.registerLayerDefinition(AstikorCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
+        event.registerLayerDefinition(AstikorCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);
     }
+
     @SubscribeEvent
     private static void registerScreens(RegisterMenuScreensEvent event) {
         // register plow screen
