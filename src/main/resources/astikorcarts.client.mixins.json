@@ -3,7 +3,6 @@
   "package": "de.mennomax.astikorcarts.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ModelManagerMixin",
     "ModelPartMixin"
   ],
   "injectors": {

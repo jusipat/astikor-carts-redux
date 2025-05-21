@@ -23,7 +23,7 @@ public class AssembledTextureFactory {
         bus.addListener(this::bake);
     }
 
-    public void bake(Event e) {
+    public void bake(Event ev) {
         final Minecraft mc = Minecraft.getInstance();
         final ResourceManager resources = mc.getResourceManager();
         final TextureManager textures = mc.getTextureManager();
