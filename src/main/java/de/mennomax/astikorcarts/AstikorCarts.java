@@ -50,7 +50,44 @@ public final class AstikorCarts {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(AstikorItems.WHEEL);
+
             event.accept(AstikorItems.OAK_SUPPLY_CART);
+            event.accept(AstikorItems.SPRUCE_SUPPLY_CART);
+            event.accept(AstikorItems.BIRCH_SUPPLY_CART);
+            event.accept(AstikorItems.ACACIA_SUPPLY_CART);
+            event.accept(AstikorItems.CHERRY_SUPPLY_CART);
+            event.accept(AstikorItems.JUNGLE_SUPPLY_CART);
+            event.accept(AstikorItems.DARK_OAK_SUPPLY_CART);
+            event.accept(AstikorItems.CRIMSON_SUPPLY_CART);
+            event.accept(AstikorItems.WARPED_SUPPLY_CART);
+            event.accept(AstikorItems.MANGROVE_SUPPLY_CART);
+            event.accept(AstikorItems.BAMBOO_SUPPLY_CART);
+
+            event.accept(AstikorItems.OAK_ANIMAL_CART);
+            event.accept(AstikorItems.SPRUCE_ANIMAL_CART);
+            event.accept(AstikorItems.BIRCH_ANIMAL_CART);
+            event.accept(AstikorItems.ACACIA_ANIMAL_CART);
+            event.accept(AstikorItems.CHERRY_ANIMAL_CART);
+            event.accept(AstikorItems.JUNGLE_ANIMAL_CART);
+            event.accept(AstikorItems.DARK_OAK_ANIMAL_CART);
+            event.accept(AstikorItems.CRIMSON_ANIMAL_CART);
+            event.accept(AstikorItems.WARPED_ANIMAL_CART);
+            event.accept(AstikorItems.MANGROVE_ANIMAL_CART);
+            event.accept(AstikorItems.BAMBOO_ANIMAL_CART);
+
+            event.accept(AstikorItems.OAK_PLOW);
+            event.accept(AstikorItems.SPRUCE_PLOW);
+            event.accept(AstikorItems.BIRCH_PLOW);
+            event.accept(AstikorItems.ACACIA_PLOW);
+            event.accept(AstikorItems.CHERRY_PLOW);
+            event.accept(AstikorItems.JUNGLE_PLOW);
+            event.accept(AstikorItems.DARK_OAK_PLOW);
+            event.accept(AstikorItems.CRIMSON_PLOW);
+            event.accept(AstikorItems.WARPED_PLOW);
+            event.accept(AstikorItems.MANGROVE_PLOW);
+            event.accept(AstikorItems.BAMBOO_PLOW);
+
+
             //HAND_CART.values().forEach(event::accept);
             //REAPER.values().forEach(event::accept);
             //SEED_DRILL.values().forEach(event::accept);
@@ -92,10 +129,8 @@ public final class AstikorCarts {
     public AstikorCarts(IEventBus bus) {
         bus.addListener(this::setup);
         //NeoForge.EVENT_BUS.register(this);
-
         AstikorItems.register(bus);
         AstikorEntities.register(bus);
-        //init(); // todo: busted af, fix
         SoundEvents.SOUND_EVENTS.register(bus);
         ACStats.AC_STATS.register(bus);
         bus.<EntityAttributeCreationEvent>addListener(e -> {e.put(AstikorEntities.POSTILION_ENTITY.get(), LivingEntity.createLivingAttributes().build());});

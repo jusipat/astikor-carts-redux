@@ -412,7 +412,7 @@ public abstract class AbstractDrawnEntity extends Entity {
     public boolean hurtServer(ServerLevel serverLevel, final DamageSource source, final float amount) {
         if (this.isInvulnerableToBase(source)) {
             return false;
-        } else if (!this.level().isClientSide && this.isAlive()) {
+        } else if (this.isAlive()) {
             if (source.is(DamageTypes.CACTUS)) {
                 return false;
             }
@@ -422,7 +422,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             this.setForwardDirection(-this.getForwardDirection());
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
-            final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild;
+            final boolean flag = source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild; //todo: Fix this for destroying carts
             if (flag || this.getDamageTaken() > 40.0F) {
                 this.onDestroyed(source, flag);
                 this.setPulling(null);
@@ -476,6 +476,7 @@ public abstract class AbstractDrawnEntity extends Entity {
      *
      */
     public void onDestroyedAndDoDrops(final DamageSource source) {
+
     }
 
     private void tickLerp() {

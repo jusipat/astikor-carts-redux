@@ -24,28 +24,157 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 public class ClientModEventSubscriber {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        // Registering entities here
+
+        // supply cart entities
         EntityRenderers.register(
-                AstikorEntities.ANIMAL_CART_ENTITY.get(),
-                AnimalCartRenderer::new
-        );
-        EntityRenderers.register(
-                AstikorEntities.SUPPLY_CART_ENTITY.get(),
+                AstikorEntities.OAK_SUPPLY_CART_ENTITY.get(),
                 SupplyCartRenderer::new
         );
         EntityRenderers.register(
-                AstikorEntities.PLOW_ENTITY.get(),
+                AstikorEntities.SPRUCE_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BIRCH_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.ACACIA_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CHERRY_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.JUNGLE_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.DARK_OAK_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CRIMSON_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.WARPED_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.MANGROVE_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BAMBOO_SUPPLY_CART_ENTITY.get(),
+                SupplyCartRenderer::new
+        );
+
+        // animal cart entities
+
+        EntityRenderers.register(
+                AstikorEntities.OAK_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.SPRUCE_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BIRCH_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.ACACIA_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CHERRY_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.JUNGLE_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.DARK_OAK_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CRIMSON_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.WARPED_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.MANGROVE_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BAMBOO_ANIMAL_CART_ENTITY.get(),
+                AnimalCartRenderer::new
+        );
+
+        // plow entities
+
+        EntityRenderers.register(
+                AstikorEntities.OAK_PLOW_ENTITY.get(),
                 PlowRenderer::new
         );
+        EntityRenderers.register(
+                AstikorEntities.SPRUCE_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BIRCH_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.ACACIA_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CHERRY_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.JUNGLE_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.DARK_OAK_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.CRIMSON_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.WARPED_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.MANGROVE_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+        EntityRenderers.register(
+                AstikorEntities.BAMBOO_PLOW_ENTITY.get(),
+                PlowRenderer::new
+        );
+
+
         EntityRenderers.register(
                 AstikorEntities.POSTILION_ENTITY.get(),
                 PostilionRenderer::new
         );
+
     }
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        // Add our layer here.
         event.registerLayerDefinition(AstikorCartsModelLayers.PLOW, PlowModel::createLayer);
         event.registerLayerDefinition(AstikorCartsModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
         event.registerLayerDefinition(AstikorCartsModelLayers.SUPPLY_CART, SupplyCartModel::createLayer);

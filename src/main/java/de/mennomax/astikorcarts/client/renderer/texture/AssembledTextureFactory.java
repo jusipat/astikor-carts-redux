@@ -8,8 +8,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.IEventBus;
 
 public class AssembledTextureFactory {
     private final Object2ObjectMap<ResourceLocation, AssembledTexture> textures = new Object2ObjectOpenHashMap<>();
@@ -19,11 +17,7 @@ public class AssembledTextureFactory {
         return this;
     }
 
-    public void register(final IEventBus bus) {
-        bus.addListener(this::bake);
-    }
-
-    public void bake(Event ev) {
+    public void bake() {
         final Minecraft mc = Minecraft.getInstance();
         final ResourceManager resources = mc.getResourceManager();
         final TextureManager textures = mc.getTextureManager();

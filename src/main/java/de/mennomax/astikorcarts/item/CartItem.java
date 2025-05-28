@@ -67,9 +67,8 @@ public final class CartItem extends Item {
 
             if (result.getType() == HitResult.Type.BLOCK) {
                 final Holder.Reference<EntityType<?>> type = BuiltInRegistries.ENTITY_TYPE.get(BuiltInRegistries.ITEM.getKey(this)).get();
-                if (type == null) {
-                    return InteractionResult.PASS;
-                }
+
+
                 final Entity cart = type.value().create(world, EntitySpawnReason.SPAWN_ITEM_USE);
                 if (cart == null) {
                     return InteractionResult.PASS;
