@@ -1,5 +1,6 @@
 package de.mennomax.astikorcarts.client;
 
+import com.google.common.collect.ImmutableMap;
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.client.gui.screen.inventory.PlowScreen;
 import de.mennomax.astikorcarts.client.renderer.AstikorCartsModelLayers;
@@ -11,6 +12,8 @@ import de.mennomax.astikorcarts.client.renderer.entity.model.AnimalCartModel;
 import de.mennomax.astikorcarts.client.renderer.entity.model.PlowModel;
 import de.mennomax.astikorcarts.client.renderer.entity.model.SupplyCartModel;
 import de.mennomax.astikorcarts.entity.AstikorEntities;
+import de.mennomax.astikorcarts.network.clientbound.UpdateDrawnMessage;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -18,14 +21,22 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
+import java.util.Objects;
+
 @EventBusSubscriber(
         bus = EventBusSubscriber.Bus.MOD,
         modid = AstikorCarts.ID)
 public class ClientModEventSubscriber {
+    private static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(
+            WoodType.CRIMSON, "stem",
+            WoodType.WARPED, "stem",
+            WoodType.BAMBOO, "block"
+    );
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-
-        // supply cart entities
+        //ClientPlayNetworking.registerGlobalReceiver(UpdateDrawnMessage.TYPE, (payload, ctx) -> ctx.client().execute(() -> UpdateDrawnMessage.handle(payload, Objects.requireNonNull(ctx.client().level))));
+        // todo: port to neoforge syntax
         EntityRenderers.register(
                 AstikorEntities.OAK_SUPPLY_CART_ENTITY.get(),
                 SupplyCartRenderer::new
@@ -170,7 +181,6 @@ public class ClientModEventSubscriber {
                 AstikorEntities.POSTILION_ENTITY.get(),
                 PostilionRenderer::new
         );
-
     }
 
     @SubscribeEvent

@@ -128,7 +128,6 @@ public final class AstikorCarts {
 
     public AstikorCarts(IEventBus bus) {
         bus.addListener(this::setup);
-        //NeoForge.EVENT_BUS.register(this);
         AstikorItems.register(bus);
         AstikorEntities.register(bus);
         SoundEvents.SOUND_EVENTS.register(bus);

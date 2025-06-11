@@ -143,6 +143,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     @Override
     public Item getCartItem() {
         return AstikorItems.PLOW.get(this.getWoodType()).asItem();
+
     }
 
     @Override
@@ -170,20 +171,10 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected void saveInventory(CompoundTag tag) {
-        
-    }
-
-    @Override
     protected void readAdditionalSaveData(final CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         ContainerHelper.loadAllItems(compound, this.getItemStacks(), this.registryAccess());
         this.entityData.set(PLOWING, compound.getBoolean("Plowing"));
-    }
-
-    @Override
-    protected void readInventory(CompoundTag tag) {
-
     }
 
     @Override

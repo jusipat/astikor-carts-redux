@@ -1,6 +1,6 @@
 package de.mennomax.astikorcarts.entity;
 
-import de.mennomax.astikorcarts.world.AstikorWorld;
+import de.mennomax.astikorcarts.util.AstikorWorld;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

@@ -80,14 +80,4 @@ public abstract class AbstractCargoCart extends AbstractDrawnInventoryEntity {
             this.getEntityData().set(CARGO.get(i), items[i]);
         }
     }
-
-    @Override
-    protected void saveInventory(CompoundTag tag) {
-        this.addChestVehicleSaveData(tag, this.registryAccess());
-    }
-
-    @Override
-    protected void readInventory(CompoundTag tag) {
-        this.readChestVehicleSaveData(tag, this.registryAccess());
-    }
 }

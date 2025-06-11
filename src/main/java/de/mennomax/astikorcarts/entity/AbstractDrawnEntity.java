@@ -4,7 +4,7 @@ import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.config.AstikorCartsConfig;
 import de.mennomax.astikorcarts.network.clientbound.UpdateDrawnMessage;
 import de.mennomax.astikorcarts.util.CartWheel;
-import de.mennomax.astikorcarts.world.AstikorWorld;
+import de.mennomax.astikorcarts.util.AstikorWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -55,10 +55,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractDrawnEntity extends Entity {
     private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
@@ -233,7 +230,9 @@ public abstract class AbstractDrawnEntity extends Entity {
                     } else if (this.pulling instanceof AbstractDrawnEntity) {
                         ((AbstractDrawnEntity) this.pulling).drawn = null;
                     }
-                    PacketDistributor.sendToPlayersTrackingEntity(entityIn, new UpdateDrawnMessage(-1, this.getId()));
+                    for (ServerPlayer player : Objects.requireNonNull(level().getServer()).getPlayerList().getPlayers()) {
+                        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new UpdateDrawnMessage(-1, this.getId()));
+                    }
                     this.pullingUUID = null;
                     if (this.tickCount > 20) {
                         this.playDetachSound();
@@ -252,7 +251,9 @@ public abstract class AbstractDrawnEntity extends Entity {
                     if (entityIn instanceof PathfinderMob pathfinder) {
                         pathfinder.getNavigation().stop();
                     }
-                    PacketDistributor.sendToPlayersTrackingEntity(entityIn, new UpdateDrawnMessage(-1, this.getId()));
+                    for (ServerPlayer player : Objects.requireNonNull(level().getServer()).getPlayerList().getPlayers()) {
+                        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new UpdateDrawnMessage(entityIn.getId(), this.getId()));
+                    }
                     this.pullingUUID = entityIn.getUUID();
                     if (this.tickCount > 20) {
                         this.playAttachSound();

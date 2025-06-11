@@ -1,4 +1,4 @@
-package de.mennomax.astikorcarts.world;
+package de.mennomax.astikorcarts.util;
 
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.entity.AbstractDrawnEntity;

@@ -2,7 +2,7 @@ package de.mennomax.astikorcarts.network.serverbound;
 
 import de.mennomax.astikorcarts.AstikorCarts;
 import de.mennomax.astikorcarts.entity.AbstractDrawnEntity;
-import de.mennomax.astikorcarts.world.AstikorWorld;
+import de.mennomax.astikorcarts.util.AstikorWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
