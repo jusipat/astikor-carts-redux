@@ -26,6 +26,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -40,8 +41,6 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Unique;
 
-import static net.minecraft.world.level.block.state.properties.WoodType.*;
-
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = AstikorCartsRedux.MODID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
@@ -53,6 +52,7 @@ public class AstikorCartsReduxClient {
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        container.registerConfig(ModConfig.Type.CLIENT, AstikorCartsReduxConfig.clientSpec());
     }
 
     public static final Lazy<KeyMapping> ACTION_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
