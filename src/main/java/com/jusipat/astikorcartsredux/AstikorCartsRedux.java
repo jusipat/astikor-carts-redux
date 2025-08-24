@@ -120,11 +120,14 @@ public class AstikorCartsRedux {
 
     // Creates a creative tab with the id "astikorcartsredux:example_tab" for the example item, that is placed after the combat tab
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ASTIKORCARTSREDUX_TAB = CREATIVE_MODE_TABS.register("astikorcartsredux_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.astikorcartsredux")) //The language key for the title of your CreativeModeTab
+            .title(Component.translatable("itemGroup.astikorcartsredux")) // The language key for the title of your CreativeModeTab
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> WHEEL.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                output.accept(WHEEL.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(WHEEL.get());
+                CARTS.values().forEach(map -> { // add all carts to creative tab
+                    map.values().forEach(cart -> {output.accept(cart.get());});
+                });
             }).build());
 
     static {

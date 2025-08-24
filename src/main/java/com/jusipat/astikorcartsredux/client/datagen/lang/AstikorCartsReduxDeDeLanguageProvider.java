@@ -26,7 +26,7 @@ public class AstikorCartsReduxDeDeLanguageProvider extends LanguageProvider {
             .put(WoodType.WARPED, "Wirr").build();
 
     public AstikorCartsReduxDeDeLanguageProvider(PackOutput output) {
-        super(output, AstikorCartsRedux.MODID, "en_us");
+        super(output, AstikorCartsRedux.MODID, "de_de");
     }
 
 
@@ -54,6 +54,7 @@ public class AstikorCartsReduxDeDeLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.REAPER_ENTITY.get(), "Mähmaschine");
         add(AstikorCartsRedux.CART_ONE_CM.toLanguageKey(), "Strecke auf Karren gefahren");
         add("key.categories.AstikorCartsRedux", "AstikorCartsRedux");
+        add("itemGroup.astikorcartsredux", "AstikorCarts Redux");
         add("key.AstikorCartsRedux.action", "Karren an-/abhängen");
         add("key.AstikorCartsRedux.slow", "Langsammodus an-/ausschalten");
         add("subtitles.AstikorCartsRedux.cart.attached", "Karren wird angehängt");

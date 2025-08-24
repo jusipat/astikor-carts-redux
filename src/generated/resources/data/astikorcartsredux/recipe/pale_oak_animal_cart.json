@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": "minecraft:pale_oak_planks",
+    "w": "astikorcartsredux:wheel"
+  },
+  "pattern": [
+    "ppp",
+    "ppp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "astikorcartsredux:pale_oak_animal_cart"
+  }
+}

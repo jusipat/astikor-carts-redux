@@ -7,11 +7,14 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
 
 
     public AstikorCartsReduxEnUsLanguageProvider(PackOutput output) {
-        super(output, AstikorCartsRedux.MODID, "de_de");
+        super(output, AstikorCartsRedux.MODID, "en_us");
     }
 
     private static String capitalizeWordStart(String s) {
@@ -24,6 +27,13 @@ public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
         return builder.toString();
     }
 
+    public static String toDisplayName(String input) {
+        return Arrays.stream(input.split("_"))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
+    }
+
+
     @Override
     protected void addTranslations() {
         add(AstikorCartsRedux.WHEEL.toStack(), "Wheel");
@@ -31,9 +41,9 @@ public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
         for (String type : AstikorCartsRedux.CART_TYPES) {
             for (WoodType woodType : WoodType.values().toList()) {
                 DeferredItem<CartItem> item = AstikorCartsRedux.CARTS.get(type).get(woodType);
-                String displayName = capitalizeWordStart(woodType.name()) + " " + capitalizeWordStart(type.replace("_", " "));
+                String displayName = capitalizeWordStart(woodType.name()) + toDisplayName(type);
                 add(item.get(), displayName);
-                System.out.println(displayName + '\n');
+                //System.out.println(displayName + '\n'); debug on Data run.
             }
         }
 
@@ -44,6 +54,7 @@ public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.SEED_DRILL_ENTITY.get(), "Seed Drill");
         add(AstikorCartsRedux.REAPER_ENTITY.get(), "Reaper");
         add(AstikorCartsRedux.CART_ONE_CM.toLanguageKey(), "Distance by Cart");
+        add("itemGroup.astikorcartsredux", "AstikorCarts Redux");
         add("key.categories.niftycarts", "NiftyCarts");
         add("key.niftycarts.action", "Attach/Detach Cart");
         add("key.niftycarts.slow", "Toggle Slow");

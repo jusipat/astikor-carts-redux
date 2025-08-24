@@ -5,6 +5,12 @@
   "mixins": [
     "AbstractHorseMixin"
   ],
+  "client": [
+    "ClientLevelMixin",
+    "LocalPlayerMixin",
+    "ModelManagerMixin",
+    "ModelPartMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

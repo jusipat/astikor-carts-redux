@@ -1,14 +1,12 @@
 package com.jusipat.astikorcartsredux;
 
-import com.jusipat.astikorcartsredux.client.datagen.AstikorCartsReduxModelProvider;
-import com.jusipat.astikorcartsredux.client.datagen.AstikorCartsReduxRecipeProvider;
+import com.jusipat.astikorcartsredux.client.datagen.ModItemModelProvider;
+import com.jusipat.astikorcartsredux.client.datagen.ModRecipeProvider;
 import com.jusipat.astikorcartsredux.client.datagen.lang.AstikorCartsReduxDeDeLanguageProvider;
 import com.jusipat.astikorcartsredux.client.datagen.lang.AstikorCartsReduxEnUsLanguageProvider;
 import com.jusipat.astikorcartsredux.client.renderer.AstikorCartsReduxModelLayers;
 import com.jusipat.astikorcartsredux.client.renderer.entity.*;
 import com.jusipat.astikorcartsredux.client.renderer.entity.model.*;
-import com.jusipat.astikorcartsredux.client.screen.PlowScreen;
-import com.jusipat.astikorcartsredux.client.screen.SeedDrillScreen;
 import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnPayload;
 import com.jusipat.astikorcartsredux.network.serverbound.ActionKeyPayload;
 import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowPayload;
@@ -16,10 +14,6 @@ import com.jusipat.astikorcartsredux.util.NiftyWorld;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -33,15 +27,9 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.Objects;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = AstikorCartsRedux.MODID, dist = Dist.CLIENT)
@@ -142,9 +130,8 @@ public class AstikorCartsReduxClient {
 
     @SubscribeEvent // on the mod event bus
     public static void gatherData(GatherDataEvent.Client event) {
-        // Call event.createDatapackRegistryObjects(...) first if adding datapack objects
-        event.createProvider(AstikorCartsReduxRecipeProvider.Runner::new);
-        event.createProvider(AstikorCartsReduxModelProvider::new);
+        event.createProvider(ModRecipeProvider.Runner::new);
+        event.createProvider(ModItemModelProvider::new);
         event.createProvider(AstikorCartsReduxEnUsLanguageProvider::new);
         event.createProvider(AstikorCartsReduxDeDeLanguageProvider::new);
     }

@@ -1,6 +1,6 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
-import com.jusipat.astikorcartsredux.client.mixin.ModelPartMixin;
+import com.jusipat.astikorcartsredux.mixin.ModelPartMixin;
 import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
