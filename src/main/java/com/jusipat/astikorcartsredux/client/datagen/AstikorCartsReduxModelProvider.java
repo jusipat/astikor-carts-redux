@@ -14,13 +14,16 @@ import java.util.Arrays;
 public class AstikorCartsReduxModelProvider extends ModelProvider {
 
 
-    public AstikorCartsReduxModelProvider(PackOutput output, String modId) {
+    public AstikorCartsReduxModelProvider(PackOutput output) {
         super(output, AstikorCartsRedux.MODID);
     }
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        itemModels.generateFlatItem(AstikorCartsRedux.WHEEL.asItem(), ModelTemplates.FLAT_ITEM);
+
+       // itemModels.generateFlatItem(AstikorCartsRedux.WHEEL.asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AstikorCartsRedux.WHEEL.get(), ModelTemplates.FLAT_ITEM);
+
         AstikorCartsRedux.CARTS.forEach((cartType, perWoodMap) -> {
             Arrays.stream(AstikorCartsRedux.VANILLA_WOOD_TYPES).distinct().forEach(woodType -> {
                 DeferredItem<CartItem> item = perWoodMap.get(woodType);

@@ -1,5 +1,9 @@
 package com.jusipat.astikorcartsredux;
 
+import com.jusipat.astikorcartsredux.client.datagen.AstikorCartsReduxModelProvider;
+import com.jusipat.astikorcartsredux.client.datagen.AstikorCartsReduxRecipeProvider;
+import com.jusipat.astikorcartsredux.client.datagen.lang.AstikorCartsReduxDeDeLanguageProvider;
+import com.jusipat.astikorcartsredux.client.datagen.lang.AstikorCartsReduxEnUsLanguageProvider;
 import com.jusipat.astikorcartsredux.client.renderer.AstikorCartsReduxModelLayers;
 import com.jusipat.astikorcartsredux.client.renderer.entity.*;
 import com.jusipat.astikorcartsredux.client.renderer.entity.model.*;
@@ -31,6 +35,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -115,7 +120,6 @@ public class AstikorCartsReduxClient {
         }
     }
 
-
     @SubscribeEvent // on the mod event bus only on the physical client
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(AstikorCartsRedux.SUPPLY_CART_ENTITY.get(), SupplyCartRenderer::new);
@@ -134,7 +138,15 @@ public class AstikorCartsReduxClient {
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.HAND_CART, HandCartModel::createLayer);
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.SEED_DRILL, SeedDrillModel::createLayer);
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.REAPER, ReaperModel::createLayer);
+    }
 
+    @SubscribeEvent // on the mod event bus
+    public static void gatherData(GatherDataEvent.Client event) {
+        // Call event.createDatapackRegistryObjects(...) first if adding datapack objects
+        event.createProvider(AstikorCartsReduxRecipeProvider.Runner::new);
+        event.createProvider(AstikorCartsReduxModelProvider::new);
+        event.createProvider(AstikorCartsReduxEnUsLanguageProvider::new);
+        event.createProvider(AstikorCartsReduxDeDeLanguageProvider::new);
     }
 
 }
