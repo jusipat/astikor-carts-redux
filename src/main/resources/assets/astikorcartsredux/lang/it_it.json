@@ -1,0 +1,16 @@
+{
+  "item.niftycarts.supply_cart": "Carro da trasporto",
+  "item.niftycarts.plow": "Aratro",
+  "item.niftycarts.animal_cart": "Carro per animali",
+  "item.niftycarts.wheel": "Ruota",
+  "entity.niftycarts.supply_cart": "Carro da trasporto",
+  "entity.niftycarts.plow": "Aratro",
+  "entity.niftycarts.animal_cart": "Carro per animali",
+  "entity.niftycarts.postilion": "Postiglione",
+  "key.categories.niftycarts": "NiftyCarts",
+  "key.niftycarts.action": "Azione",
+  "subtitles.niftycarts.cart.attached": "Carro attaccato",
+  "subtitles.niftycarts.cart.detached": "Carro distaccato",
+  "subtitles.niftycarts.cart.placed": "Carro piazzato",
+  "stat.niftycarts.cart_one_cm": "Distanza via carro"
+}

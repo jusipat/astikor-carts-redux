@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.jusipat.astikorcartsredux.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AbstractHorseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
