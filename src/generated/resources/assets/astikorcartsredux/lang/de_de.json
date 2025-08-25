@@ -1,5 +1,4 @@
 {
-  "astikorcartsredux.cart_one_cm": "Strecke auf Karren gefahren",
   "entity.astikorcartsredux.animal_cart": "Tierkarren",
   "entity.astikorcartsredux.hand_cart": "Handkarren",
   "entity.astikorcartsredux.plow": "Pflug",
@@ -95,6 +94,7 @@
   "key.AstikorCartsRedux.action": "Karren an-/abhängen",
   "key.AstikorCartsRedux.slow": "Langsammodus an-/ausschalten",
   "key.categories.AstikorCartsRedux": "AstikorCartsRedux",
+  "stat.astikorcartsredux.cart_one_cm": "Strecke auf Karren gefahren",
   "subtitles.AstikorCartsRedux.cart.attached": "Karren wird angehängt",
   "subtitles.AstikorCartsRedux.cart.detached": "Karren wird abgehängt",
   "subtitles.AstikorCartsRedux.cart.placed": "Karren wird platziert"

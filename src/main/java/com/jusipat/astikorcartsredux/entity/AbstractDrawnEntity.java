@@ -161,7 +161,7 @@ public abstract class AbstractDrawnEntity extends Entity {
             if (cm > 0) {
                 for (final Entity passenger : this.getPassengers()) {
                     if (passenger instanceof Player player) {
-                        player.awardStat(AstikorCartsRedux.CART_ONE_CM, cm);
+                        player.awardStat(AstikorCartsRedux.CART_ONE_CM.get(), cm);
                     }
                 }
             }

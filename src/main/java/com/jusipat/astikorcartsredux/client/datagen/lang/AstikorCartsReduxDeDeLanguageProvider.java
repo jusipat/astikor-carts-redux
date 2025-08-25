@@ -52,7 +52,7 @@ public class AstikorCartsReduxDeDeLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.PLOW_ENTITY.get(), "Pflug");
         add(AstikorCartsRedux.SEED_DRILL_ENTITY.get(), "Sämaschine");
         add(AstikorCartsRedux.REAPER_ENTITY.get(), "Mähmaschine");
-        add(AstikorCartsRedux.CART_ONE_CM.toLanguageKey(), "Strecke auf Karren gefahren");
+        add("stat.astikorcartsredux.cart_one_cm", "Strecke auf Karren gefahren");
         add("key.categories.AstikorCartsRedux", "AstikorCartsRedux");
         add("itemGroup.astikorcartsredux", "AstikorCarts Redux");
         add("key.AstikorCartsRedux.action", "Karren an-/abhängen");

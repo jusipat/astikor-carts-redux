@@ -1,5 +1,4 @@
 {
-  "astikorcartsredux.cart_one_cm": "Distance by Cart",
   "entity.astikorcartsredux.animal_cart": "Animal Cart",
   "entity.astikorcartsredux.hand_cart": "Hand Cart",
   "entity.astikorcartsredux.plow": "Plow",
@@ -95,6 +94,7 @@
   "key.categories.niftycarts": "NiftyCarts",
   "key.niftycarts.action": "Attach/Detach Cart",
   "key.niftycarts.slow": "Toggle Slow",
+  "stat.astikorcartsredux.cart_one_cm": "Distance by Cart",
   "subtitles.niftycarts.cart.attached": "Cart attaches",
   "subtitles.niftycarts.cart.detached": "Cart detaches",
   "subtitles.niftycarts.cart.placed": "Cart placed"

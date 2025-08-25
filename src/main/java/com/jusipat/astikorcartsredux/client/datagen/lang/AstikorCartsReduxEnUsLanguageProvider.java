@@ -53,7 +53,7 @@ public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.PLOW_ENTITY.get(), "Plow");
         add(AstikorCartsRedux.SEED_DRILL_ENTITY.get(), "Seed Drill");
         add(AstikorCartsRedux.REAPER_ENTITY.get(), "Reaper");
-        add(AstikorCartsRedux.CART_ONE_CM.toLanguageKey(), "Distance by Cart");
+        add("stat.astikorcartsredux.cart_one_cm", "Distance by Cart");
         add("itemGroup.astikorcartsredux", "AstikorCarts Redux");
         add("key.categories.niftycarts", "NiftyCarts");
         add("key.niftycarts.action", "Attach/Detach Cart");

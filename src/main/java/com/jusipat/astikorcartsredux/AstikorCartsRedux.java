@@ -16,6 +16,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
@@ -54,9 +56,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -77,6 +77,15 @@ public class AstikorCartsRedux {
     public static final DeferredRegister<ResourceLocation> AC_STATS = DeferredRegister.create(Registries.CUSTOM_STAT, AstikorCartsRedux.MODID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, AstikorCartsRedux.MODID);
     private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(Registries.SOUND_EVENT, AstikorCartsRedux.MODID);
+
+    private static final List<Runnable> STAT_SETUP = new ArrayList<>();
+
+    public static final DeferredHolder<ResourceLocation, ResourceLocation> CART_ONE_CM = makeACStat("cart_one_cm");
+    private static DeferredHolder<ResourceLocation, ResourceLocation> makeACStat(String key) {
+        ResourceLocation resourcelocation = ResourceLocation.fromNamespaceAndPath(AstikorCartsRedux.MODID, key);
+        STAT_SETUP.add(() -> Stats.CUSTOM.get(resourcelocation, StatFormatter.DEFAULT));
+        return AC_STATS.register(key, () -> resourcelocation);
+    }
 
     public static final DeferredItem<Item> WHEEL = ITEMS.registerItem("wheel", Item::new, new Item.Properties());
 
@@ -216,8 +225,6 @@ public class AstikorCartsRedux {
     public static final Supplier<MenuType<PlowMenu>> PLOW_MENU_TYPE = MENUS.register("plow", () -> new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS));
     public static final Supplier<MenuType<SeedDrillMenu>> SEED_DRILL_MENU_TYPE = MENUS.register("seed_drill", () -> new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
-    public static final ResourceLocation CART_ONE_CM = resLoc("cart_one_cm");
-
     public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/hoe"));
     public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/shovel"));
     public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/axe"));
@@ -276,9 +283,9 @@ public class AstikorCartsRedux {
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
-//        event.enqueueWork(() ->
-//                AC_STATS.register("cart_one_cm", () -> resLoc("cart_one_cm"))
-//        );
+        event.enqueueWork(() -> {
+            STAT_SETUP.forEach(Runnable::run);
+        });
     }
 
     private static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
