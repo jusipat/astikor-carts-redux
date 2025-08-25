@@ -377,7 +377,7 @@ public abstract class AbstractDrawnEntity extends Entity {
         if (entityIn == null) {
             return true;
         }
-        System.out.println(this.pulling);
+        //System.out.println(this.pulling);
         return (this.pulling == null || !this.pulling.isAlive()) && !this.hasPassenger(entityIn) && this.canPull(entityIn);
     }
 

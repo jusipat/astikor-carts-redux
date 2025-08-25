@@ -1,6 +1,5 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
-import com.jusipat.astikorcartsredux.mixin.ModelPartMixin;
 import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -19,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -115,18 +115,39 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, S extends Car
         stack.popPose();
     }
 
+    private static final Field CHILDREN_FIELD;
+
+    static {
+        try {
+            CHILDREN_FIELD = ModelPart.class.getDeclaredField("children");
+            CHILDREN_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ModelPart> getChildren(ModelPart part) {
+        try {
+            return (Map<String, ModelPart>) CHILDREN_FIELD.get(part);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     protected void attach(final ModelPart bone, final ModelPart attachment, final Consumer<PoseStack> function, final PoseStack stack) {
         stack.pushPose();
         bone.translateAndRotate(stack);
         if (bone == attachment) {
             function.accept(stack);
         } else {
-            final Map<String, ModelPart> childModels;
-            childModels = ((ModelPartMixin) ((Object) bone)).getChildren();
+            final Map<String, ModelPart> childModels = getChildren(bone);
             for (final ModelPart child : childModels.values()) {
                 this.attach(child, attachment, function, stack);
             }
         }
         stack.popPose();
     }
+
 }

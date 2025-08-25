@@ -7,8 +7,7 @@
   ],
   "client": [
     "ClientLevelMixin",
-    "LocalPlayerMixin",
-    "ModelPartMixin"
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

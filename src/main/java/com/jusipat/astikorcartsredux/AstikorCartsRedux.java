@@ -213,7 +213,6 @@ public class AstikorCartsRedux {
             .add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
             .build();
 
-    // For some DeferredRegister<MenuType<?>> MENU
     public static final Supplier<MenuType<PlowMenu>> PLOW_MENU_TYPE = MENUS.register("plow", () -> new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS));
     public static final Supplier<MenuType<SeedDrillMenu>> SEED_DRILL_MENU_TYPE = MENUS.register("seed_drill", () -> new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS));
 

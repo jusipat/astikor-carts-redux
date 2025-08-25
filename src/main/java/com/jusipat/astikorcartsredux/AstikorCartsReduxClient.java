@@ -11,6 +11,8 @@ import com.jusipat.astikorcartsredux.client.renderer.entity.model.*;
 import com.jusipat.astikorcartsredux.client.renderer.texture.AssembledTexture;
 import com.jusipat.astikorcartsredux.client.renderer.texture.AssembledTextureFactory;
 import com.jusipat.astikorcartsredux.client.renderer.texture.Material;
+import com.jusipat.astikorcartsredux.client.screen.PlowScreen;
+import com.jusipat.astikorcartsredux.client.screen.SeedDrillScreen;
 import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnPayload;
 import com.jusipat.astikorcartsredux.network.serverbound.ActionKeyPayload;
 import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowPayload;
@@ -28,10 +30,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -53,6 +52,7 @@ public class AstikorCartsReduxClient {
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         container.registerConfig(ModConfig.Type.CLIENT, AstikorCartsReduxConfig.clientSpec());
+
     }
 
     public static final Lazy<KeyMapping> ACTION_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
@@ -115,6 +115,13 @@ public class AstikorCartsReduxClient {
         if (!mc.isPaused() && mc.level != null) {
             NiftyWorld.getClient().tick(mc.level);
         }
+    }
+
+    // registering screens to client mod bus
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(AstikorCartsRedux.PLOW_MENU_TYPE.get(), PlowScreen::new);
+        event.register(AstikorCartsRedux.SEED_DRILL_MENU_TYPE.get(), SeedDrillScreen::new);
     }
 
     @SubscribeEvent // on the mod event bus only on the physical client
