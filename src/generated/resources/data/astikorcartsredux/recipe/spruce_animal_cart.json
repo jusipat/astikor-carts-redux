@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "item": "minecraft:spruce_planks"
+    },
+    "w": {
+      "item": "astikorcartsredux:wheel"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "ppp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "astikorcartsredux:spruce_animal_cart"
+  }
+}

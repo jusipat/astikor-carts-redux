@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "item": "minecraft:mangrove_planks"
+    },
+    "w": {
+      "item": "astikorcartsredux:wheel"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "pcp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "astikorcartsredux:mangrove_supply_cart"
+  }
+}
