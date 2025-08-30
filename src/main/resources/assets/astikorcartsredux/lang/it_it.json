@@ -1,0 +1,16 @@
+{
+  "item.astikorcartsredux.supply_cart": "Carro da trasporto",
+  "item.astikorcartsredux.plow": "Aratro",
+  "item.astikorcartsredux.animal_cart": "Carro per animali",
+  "item.astikorcartsredux.wheel": "Ruota",
+  "entity.astikorcartsredux.supply_cart": "Carro da trasporto",
+  "entity.astikorcartsredux.plow": "Aratro",
+  "entity.astikorcartsredux.animal_cart": "Carro per animali",
+  "entity.astikorcartsredux.postilion": "Postiglione",
+  "key.categories.astikorcartsredux": "astikorcartsredux",
+  "key.astikorcartsredux.action": "Azione",
+  "subtitles.astikorcartsredux.cart.attached": "Carro attaccato",
+  "subtitles.astikorcartsredux.cart.detached": "Carro distaccato",
+  "subtitles.astikorcartsredux.cart.placed": "Carro piazzato",
+  "stat.astikorcartsredux.cart_one_cm": "Distanza via carro"
+}

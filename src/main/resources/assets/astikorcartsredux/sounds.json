@@ -1,0 +1,30 @@
+{
+  "entity.cart.attach": {
+    "sounds": [
+      "niftycarts:entity/cart/attach"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.attached"
+  },
+  "entity.cart.detach": {
+    "sounds": [
+      "niftycarts:entity/cart/detach"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.detached"
+  },
+  "entity.cart.place": {
+    "sounds": [
+      "niftycarts:entity/cart/place"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.placed"
+  },
+  "entity.cart.creak": {
+    "sounds": [
+      "niftycarts:entity/cart/creak0",
+      "niftycarts:entity/cart/creak1",
+      "niftycarts:entity/cart/creak2",
+      "niftycarts:entity/cart/creak3",
+      "niftycarts:entity/cart/creak4"
+    ],
+    "subtitle": "subtitles.niftycarts.cart.creak"
+  }
+}
