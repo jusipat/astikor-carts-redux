@@ -55,12 +55,12 @@ public class AstikorCartsReduxEnUsLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.REAPER_ENTITY.get(), "Reaper");
         add("stat.astikorcartsredux.cart_one_cm", "Distance by Cart");
         add("itemGroup.astikorcartsredux", "AstikorCarts Redux");
-        add("key.categories.niftycarts", "NiftyCarts");
-        add("key.niftycarts.action", "Attach/Detach Cart");
-        add("key.niftycarts.slow", "Toggle Slow");
-        add("subtitles.niftycarts.cart.attached", "Cart attaches");
-        add("subtitles.niftycarts.cart.detached", "Cart detaches");
-        add("subtitles.niftycarts.cart.placed", "Cart placed");
+        add("key.categories.astikorcartsredux", "astikorcartsredux");
+        add("key.astikorcartsredux.action", "Attach/Detach Cart");
+        add("key.astikorcartsredux.slow", "Toggle Slow");
+        add("subtitles.astikorcartsredux.cart.attached", "Cart attaches");
+        add("subtitles.astikorcartsredux.cart.detached", "Cart detaches");
+        add("subtitles.astikorcartsredux.cart.placed", "Cart placed");
         add("item.supply_cart.tooltip1", "This cart can hold up to 54 stacks of items");
         add("item.supply_cart.tooltip2", "It has one seat and can be decorated with a banner");
         add("item.hand_cart.tooltip1", "This cart can hold up to 27 stacks of items");

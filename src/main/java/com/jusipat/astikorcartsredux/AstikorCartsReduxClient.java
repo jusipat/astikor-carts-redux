@@ -56,16 +56,16 @@ public class AstikorCartsReduxClient {
     }
 
     public static final Lazy<KeyMapping> ACTION_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.niftycarts.action",
+            "key.astikorcartsredux.action",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
-            "key.categories.niftycarts"));
+            "key.categories.astikorcartsredux"));
 
     public static final Lazy<KeyMapping> TOGGLE_SLOW_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.niftycarts.slow",
+            "key.astikorcartsredux.slow",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_Z,
-            "key.categories.niftycarts"
+            "key.categories.astikorcartsredux"
     ));
 
     @SubscribeEvent // on the mod event bus only on the physical client
@@ -128,6 +128,7 @@ public class AstikorCartsReduxClient {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(AstikorCartsRedux.SUPPLY_CART_ENTITY.get(), SupplyCartRenderer::new);
         event.registerEntityRenderer(AstikorCartsRedux.PLOW_ENTITY.get(), PlowRenderer::new);
+        event.registerEntityRenderer(AstikorCartsRedux.ANIMAL_CART_ENTITY.get(), AnimalCartRenderer::new);
         event.registerEntityRenderer(AstikorCartsRedux.HAND_CART_ENTITY.get(), HandCartRenderer::new);
         event.registerEntityRenderer(AstikorCartsRedux.SEED_DRILL_ENTITY.get(), SeedDrillRenderer::new);
         event.registerEntityRenderer(AstikorCartsRedux.REAPER_ENTITY.get(), ReaperRenderer::new);
