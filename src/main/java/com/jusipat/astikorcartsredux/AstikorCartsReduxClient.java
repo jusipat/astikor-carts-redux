@@ -65,13 +65,13 @@ public class AstikorCartsReduxClient {
             "key.astikorcartsredux.action",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
-            "key.astikorcartsredux.niftycarts"));
+            "key.categories.astikorcartsredux"));
 
     public static final Lazy<KeyMapping> TOGGLE_SLOW_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.niftycarts.slow",
+            "key.astikorcartsredux.slow",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_Z,
-            "key.categories.niftycarts"
+            "key.categories.astikorcartsredux"
     ));
 
     // on the mod event bus only on the physical client
