@@ -13,13 +13,6 @@ import com.jusipat.astikorcartsredux.datagen.ModItemModelProvider;
 import com.jusipat.astikorcartsredux.datagen.ModRecipeProvider;
 import com.jusipat.astikorcartsredux.datagen.lang.DeDeLanguageProvider;
 import com.jusipat.astikorcartsredux.datagen.lang.EnUsLanguageProvider;
-import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnPayload;
-import com.jusipat.astikorcartsredux.network.serverbound.ActionKeyPayload;
-import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowPayload;
-import com.jusipat.astikorcartsredux.util.NiftyWorld;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -32,25 +25,21 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handlers.ClientPayloadHandler;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.concurrent.CompletableFuture;
 
+import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.ACTION_KEY_MAPPING;
+import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.TOGGLE_SLOW_MAPPING;
+
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = AstikorCartsRedux.MODID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = AstikorCartsRedux.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = AstikorCartsRedux.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class AstikorCartsReduxClient {
 
     public AstikorCartsReduxClient(ModContainer container) {
@@ -61,56 +50,15 @@ public class AstikorCartsReduxClient {
         container.registerConfig(ModConfig.Type.CLIENT, AstikorCartsReduxConfig.clientSpec());
     }
 
-    public static final Lazy<KeyMapping> ACTION_KEY_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.astikorcartsredux.action",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
-            "key.categories.astikorcartsredux"));
-
-    public static final Lazy<KeyMapping> TOGGLE_SLOW_MAPPING = Lazy.of(() -> new KeyMapping(
-            "key.astikorcartsredux.slow",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_Z,
-            "key.categories.astikorcartsredux"
-    ));
-
-    // on the mod event bus only on the physical client
-    public static void registerBindings(RegisterKeyMappingsEvent event) {
-        event.register(ACTION_KEY_MAPPING.get());
-        event.register(TOGGLE_SLOW_MAPPING.get());
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
-
-        // handle action key
-        while (ACTION_KEY_MAPPING.get().consumeClick()) {
-            PacketDistributor.sendToServer(new ActionKeyPayload());
-        }
-
-        // handle toggle slow
-        var player = mc.player;
-        if (player != null && ToggleSlowPayload.getCart(player).isPresent()) {
-            while (TOGGLE_SLOW_MAPPING.get().consumeClick()) {
-                PacketDistributor.sendToServer(new ToggleSlowPayload());
-                KeyMapping.set(TOGGLE_SLOW_MAPPING.get().getDefaultKey(), false);
-            }
-        }
-
-        // tick nifty world if not paused
-        if (!mc.isPaused() && mc.level != null) {
-            NiftyWorld.getClient().tick();
-        }
-    }
-
     // registering screens to client mod bus
+    @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(AstikorCartsRedux.PLOW_MENU_TYPE.get(), PlowScreen::new);
-        event.register(AstikorCartsRedux.SEED_DRILL_MENU_TYPE.get(), SeedDrillScreen::new);
+        event.register(AstikorCartsRedux.SEED_DRILL_MENU_TYPE.get(), SeedDrillScreen::new); // todo: seed drill screen now opening?
     }
 
     // on the mod event bus only on the physical client
+    @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(AstikorCartsRedux.SUPPLY_CART_ENTITY.get(), SupplyCartRenderer::new);
         event.registerEntityRenderer(AstikorCartsRedux.PLOW_ENTITY.get(), PlowRenderer::new);
@@ -121,6 +69,7 @@ public class AstikorCartsReduxClient {
         event.registerEntityRenderer(AstikorCartsRedux.POSTILION_ENTITY.get(), PostilionRenderer::new);
     }
 
+    @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.PLOW, PlowModel::createLayer);
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.ANIMAL_CART, AnimalCartModel::createLayer);
@@ -130,7 +79,15 @@ public class AstikorCartsReduxClient {
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.REAPER, ReaperModel::createLayer);
     }
 
+    // on the mod event bus only on the physical client
+    @SubscribeEvent
+    public static void registerBindings(RegisterKeyMappingsEvent event) {
+        event.register(ACTION_KEY_MAPPING.get());
+        event.register(TOGGLE_SLOW_MAPPING.get());
+    }
+
      // on the mod event bus
+    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
@@ -185,6 +142,7 @@ public class AstikorCartsReduxClient {
             WoodType.BAMBOO, "block"
     );
 
+    @SubscribeEvent
     public static void onTextureStitchPost(TextureAtlasStitchedEvent event) {
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) return;
 
@@ -309,3 +267,4 @@ public class AstikorCartsReduxClient {
         factory.bake();
     }
 }
+

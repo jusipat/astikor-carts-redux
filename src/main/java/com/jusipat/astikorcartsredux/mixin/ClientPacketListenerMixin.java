@@ -1,6 +1,6 @@
 package com.jusipat.astikorcartsredux.mixin;
 
-import com.jusipat.astikorcartsredux.AstikorCartsReduxClient;
+import com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime;
 import com.jusipat.astikorcartsredux.entity.ReaperEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -23,7 +23,7 @@ public abstract class ClientPacketListenerMixin {
     private void handleSetEntityPassengersPacket(ClientboundSetPassengersPacket clientboundSetPassengersPacket, CallbackInfo ci) {
         Entity vehicle = this.level.getEntity(clientboundSetPassengersPacket.getVehicle());
         if (vehicle instanceof ReaperEntity) {
-            Component slowModeMessage = Component.translatable("tutorial.slow.message", AstikorCartsReduxClient.TOGGLE_SLOW_MAPPING.get().getTranslatedKeyMessage());
+            Component slowModeMessage = Component.translatable("tutorial.slow.message", AstikorCartsReduxClientRuntime.TOGGLE_SLOW_MAPPING.get().getTranslatedKeyMessage());
             Component component = Component.translatable("mount.onboard", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).append("; ").append(slowModeMessage);
             Minecraft.getInstance().gui.setOverlayMessage(component, false);
             Minecraft.getInstance().getNarrator().sayNow(component);

@@ -27,6 +27,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -248,15 +249,6 @@ public class AstikorCartsRedux {
 		// Register the commonSetup method for modloading
 		modEventBus.addListener(this::commonSetup);
 		modEventBus.addListener(this::registerPayloads);
-
-		// client sided registrations
-		modEventBus.addListener(AstikorCartsReduxClient::onTextureStitchPost);
-		modEventBus.addListener(AstikorCartsReduxClient::registerEntityRenderers);
-		modEventBus.addListener(AstikorCartsReduxClient::registerScreens);
-		modEventBus.addListener(AstikorCartsReduxClient::registerLayerDefinitions);
-		modEventBus.addListener(AstikorCartsReduxClient::registerBindings);
-		modEventBus.addListener(AstikorCartsReduxClient::gatherData);
-
 
 		NeoForge.EVENT_BUS.addListener(AstikorCartsRedux::onEntityJoinWorld);
 		NeoForge.EVENT_BUS.addListener(AstikorCartsRedux::onServerTick);
