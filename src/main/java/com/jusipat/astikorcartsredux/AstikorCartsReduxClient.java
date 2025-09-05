@@ -54,7 +54,7 @@ public class AstikorCartsReduxClient {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(AstikorCartsRedux.PLOW_MENU_TYPE.get(), PlowScreen::new);
-        event.register(AstikorCartsRedux.SEED_DRILL_MENU_TYPE.get(), SeedDrillScreen::new); // todo: seed drill screen now opening?
+        event.register(AstikorCartsRedux.SEED_DRILL_MENU_TYPE.get(), SeedDrillScreen::new);
     }
 
     // on the mod event bus only on the physical client
