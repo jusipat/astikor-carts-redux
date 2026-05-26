@@ -7,7 +7,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -45,7 +44,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 for (final Entity entity : this.getPassengers()) {
                     if (!(entity instanceof Player)) {
                         entity.stopRiding();
@@ -62,7 +61,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
             if (!this.canAddPassenger(player)) {
                 return InteractionResult.PASS;
             }
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
@@ -73,8 +72,8 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     @Override
     public void push(final Entity entityIn) {
         if (!entityIn.hasPassenger(this)) {
-            if (!this.level().isClientSide && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
-                    && !(entityIn instanceof WaterAnimal) && !(entityIn instanceof Player)) {
+            if (!this.level().isClientSide() && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
+                    && !(entityIn instanceof net.minecraft.world.entity.animal.fish.WaterAnimal) && !(entityIn instanceof Player)) {
                 entityIn.startRiding(this);
             } else {
                 super.push(entityIn);

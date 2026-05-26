@@ -71,7 +71,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
 
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (!player.isSecondaryUseActive() && this.pulling != null && this.pulling != player) {
                 if (player.startRiding(this)) {
                     return InteractionResult.CONSUME;
@@ -87,7 +87,7 @@ public class ReaperCartEntity extends AbstractDrawnEntity {
         if (this.getPulling() == null) {
             return;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getFirstPassenger() instanceof Player pl) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
                     this.harvest(pl);

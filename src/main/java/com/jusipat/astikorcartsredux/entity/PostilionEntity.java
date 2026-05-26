@@ -15,7 +15,7 @@ public class PostilionEntity extends DummyLivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getCoachman() == null) {
                 this.discard();
             }

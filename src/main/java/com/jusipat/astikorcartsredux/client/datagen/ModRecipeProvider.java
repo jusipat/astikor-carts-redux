@@ -2,6 +2,7 @@ package com.jusipat.astikorcartsredux.client.datagen;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -52,7 +53,7 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, AstikorCartsRedux.WHEEL)
                 .define('p', ItemTags.PLANKS)
                 .define('s', Items.STICK)
-                .unlockedBy(RecipeProvider.getHasName(Items.STICK), RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, Items.STICK)))
+                .unlockedBy(RecipeProvider.getHasName(Items.STICK), RecipeProvider.inventoryTrigger(net.minecraft.advancements.criterion.ItemPredicate.Builder.item().of(items, Items.STICK)))
                 .pattern("sss")
                 .pattern("sps")
                 .pattern("sss")
@@ -62,7 +63,7 @@ public class ModRecipeProvider extends RecipeProvider {
             ResourceLocation supplyCartId = AstikorCartsRedux.resLoc(woodType.name() + "_supply_cart");
             Optional<Holder.Reference<Item>> supplyCart = BuiltInRegistries.ITEM.get(supplyCartId);
             Item planks = BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks"));
-            var recipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, AstikorCartsRedux.WHEEL), ItemPredicate.Builder.item().of(items, planks));
+            var recipeTrigger = RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, AstikorCartsRedux.WHEEL), net.minecraft.advancements.criterion.ItemPredicate.Builder.item().of(items, planks));
             ShapedRecipeBuilder.shaped(items, RecipeCategory.TRANSPORTATION, supplyCart.get().value())
                     .define('p', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(woodType.name() + "_planks")).get().value())
                     .define('w', AstikorCartsRedux.WHEEL)

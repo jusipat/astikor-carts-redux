@@ -27,7 +27,7 @@ public final class NiftyGoalAdder<T extends Entity> {
     }
 
     public void onEntityJoinWorld(final Entity entity) {
-        if (!entity.level().isClientSide && this.type.isInstance(entity)) {
+        if (!entity.level().isClientSide() && this.type.isInstance(entity)) {
             final Set<WrappedGoal> oldGoals = this.getGoals(this.type.cast(entity));
             final List<WrappedGoal> newGoals = new ArrayList<>(oldGoals.size() + this.goals.size());
             for (final GoalEntry<T> goal : this.goals) {
