@@ -1,0 +1,20 @@
+{
+    "entity.cart.attach": {
+        "sounds": [
+            "astikorcartsredux:entity/cart/attach"
+        ],
+        "subtitle": "subtitles.astikorcartsredux.cart.attached"
+    },
+    "entity.cart.detach": {
+        "sounds": [
+            "astikorcartsredux:entity/cart/detach"
+        ],
+        "subtitle": "subtitles.astikorcartsredux.cart.detached"
+    },
+    "entity.cart.place": {
+        "sounds": [
+            "astikorcartsredux:entity/cart/place"
+        ],
+        "subtitle": "subtitles.astikorcartsredux.cart.placed"
+    }
+}

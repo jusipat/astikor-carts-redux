@@ -1,0 +1,17 @@
+{
+  "item.astikorcartsredux.supply_cart": "Carroça de suprimentos",
+  "item.astikorcartsredux.plow": "Arado",
+  "item.astikorcartsredux.animal_cart": "Carroça de transporte",
+  "item.astikorcartsredux.wheel": "Roda",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "Carroça de suprimentos",
+  "entity.astikorcartsredux.plow": "Arado",
+  "entity.astikorcartsredux.animal_cart": "Carroça de transporte",
+  "entity.astikorcartsredux.postilion": "Postilhão",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "Tecla de ação",
+  "subtitles.astikorcartsredux.cart.attached": "Carroça anexada",
+  "subtitles.astikorcartsredux.cart.detached": "Carroça desanexada",
+  "subtitles.astikorcartsredux.cart.placed": "Carroça colocada",
+  "stat.astikorcartsredux.cart_one_cm": "Distância por carroça"
+}

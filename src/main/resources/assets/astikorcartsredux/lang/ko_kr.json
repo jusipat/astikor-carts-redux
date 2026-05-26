@@ -1,0 +1,16 @@
+{
+  "item.astikorcartsredux.supply_cart": "짐수레",
+  "item.astikorcartsredux.plow": "쟁기",
+  "item.astikorcartsredux.animal_cart": "2인승 수레",
+  "item.astikorcartsredux.wheel": "수레바퀴",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "짐수레",
+  "entity.astikorcartsredux.plow": "쟁기",
+  "entity.astikorcartsredux.animal_cart": "2인승 수레",
+  "entity.astikorcartsredux.postilion": "Postilion",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "수레 작동키",
+  "subtitles.astikorcartsredux.cart.attached": "수레 연결",
+  "subtitles.astikorcartsredux.cart.detached": "수레 풀림",
+  "stat.astikorcartsredux.cart_one_cm": "수레 타고 이동한 거리"
+}

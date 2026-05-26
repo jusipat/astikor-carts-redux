@@ -1,0 +1,13 @@
+{
+  "item.astikorcartsredux.supply_cart": "马车",
+  "item.astikorcartsredux.plow": "犁",
+  "item.astikorcartsredux.animal_cart": "牲畜运载马车",
+  "item.astikorcartsredux.wheel": "车轮",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "马车",
+  "entity.astikorcartsredux.plow": "犁",
+  "entity.astikorcartsredux.animal_cart": "牲畜运载马车",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "将动物栓上车",
+  "config.astikorcartsredux.speedmodifier": "改变速度"
+}

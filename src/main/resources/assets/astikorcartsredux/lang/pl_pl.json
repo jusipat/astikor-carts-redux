@@ -1,0 +1,17 @@
+{
+  "item.astikorcartsredux.supply_cart": "Wózek z zaopatrzeniem",
+  "item.astikorcartsredux.plow": "Pług",
+  "item.astikorcartsredux.animal_cart": "Wózek ze zwierzętami",
+  "item.astikorcartsredux.wheel": "Koło",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "Wózek z zaopatrzeniem",
+  "entity.astikorcartsredux.plow": "Pług",
+  "entity.astikorcartsredux.animal_cart": "Wóz ze zwierzętami",
+  "entity.astikorcartsredux.postilion": "Pozycja",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "Przycisk akcji",
+  "subtitles.astikorcartsredux.cart.attached": "Wóz został podłączony",
+  "subtitles.astikorcartsredux.cart.detached": "Wóz został odłączony",
+  "subtitles.astikorcartsredux.cart.placed": "Wóz został położony",
+  "stat.astikorcartsredux.cart_one_cm": "Odległość od wozu"
+}

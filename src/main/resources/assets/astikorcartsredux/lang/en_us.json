@@ -1,0 +1,17 @@
+{
+  "item.astikorcartsredux.supply_cart": "Supply Cart",
+  "item.astikorcartsredux.plow": "Plow",
+  "item.astikorcartsredux.animal_cart": "Animal Cart",
+  "item.astikorcartsredux.wheel": "Wheel",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "Supply Cart",
+  "entity.astikorcartsredux.plow": "Plow",
+  "entity.astikorcartsredux.animal_cart": "Animal Cart",
+  "entity.astikorcartsredux.postilion": "Postilion",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "Action Key",
+  "subtitles.astikorcartsredux.cart.attached": "Cart attaches",
+  "subtitles.astikorcartsredux.cart.detached": "Cart detaches",
+  "subtitles.astikorcartsredux.cart.placed": "Cart placed",
+  "stat.astikorcartsredux.cart_one_cm": "Distance by Cart"
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "psp",
+    "wpw"
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "forge:rods/wooden"
+    },
+    "w": {
+      "item": "astikorcartsredux:wheel"
+    }
+  },
+  "result": {
+    "item": "astikorcartsredux:plow"
+  }
+}

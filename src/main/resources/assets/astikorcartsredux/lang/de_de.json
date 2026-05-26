@@ -1,0 +1,12 @@
+{
+  "item.astikorcartsredux.supply_cart": "Karren",
+  "item.astikorcartsredux.plow": "Pflug",
+  "item.astikorcartsredux.animal_cart": "Transportkarren",
+  "item.astikorcartsredux.wheel": "Rad",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "Karren",
+  "entity.astikorcartsredux.plow": "Pflug",
+  "entity.astikorcartsredux.animal_cart": "Transportkarren",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "Aktionstaste"
+}
