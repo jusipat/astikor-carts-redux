@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 
 
 public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/plow.png");
 
     public PlowRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new PlowModel(renderManager.bakeLayer(AstikorCartsModelLayers.PLOW)));
@@ -26,7 +25,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
 
     @Override
     public ResourceLocation getTextureLocation(final PlowEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/" + entity.getWoodType() + "_plow.png");
     }
 
     @Override

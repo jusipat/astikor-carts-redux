@@ -29,7 +29,6 @@ import net.minecraft.client.resources.PaintingTextureManager;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -54,7 +53,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, SupplyCartModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/supply_cart.png");
 
     // access to use the forge code for armor texture which is an instance method for some reason
     private static final HumanoidArmorLayer<LivingEntity, HumanoidModel<LivingEntity>, HumanoidModel<LivingEntity>> DUMMY = new HumanoidArmorLayer<>(null, null, null, Minecraft.getInstance().getModelManager());
@@ -354,7 +352,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
 
     @Override
     public ResourceLocation getTextureLocation(final SupplyCartEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/" + entity.getWoodType() + "_supply_cart.png");
     }
 
     private enum Contents {

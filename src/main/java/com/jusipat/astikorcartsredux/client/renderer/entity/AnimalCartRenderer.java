@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import java.util.List;
 
 public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, AnimalCartModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/animal_cart.png");
 
     public AnimalCartRenderer(final EntityRendererProvider.Context renderManager) {
         super(renderManager, new AnimalCartModel(renderManager.bakeLayer(AstikorCartsModelLayers.ANIMAL_CART)));
@@ -38,6 +37,6 @@ public final class AnimalCartRenderer extends DrawnRenderer<AnimalCartEntity, An
 
     @Override
     public ResourceLocation getTextureLocation(final AnimalCartEntity entity) {
-        return TEXTURE;
+        return new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/" + entity.getWoodType() + "_animal_cart.png");
     }
 }
