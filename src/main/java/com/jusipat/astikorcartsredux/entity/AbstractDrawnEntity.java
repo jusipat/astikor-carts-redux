@@ -38,6 +38,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -59,6 +60,7 @@ public abstract class AbstractDrawnEntity extends Entity implements IEntityAddit
     private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ItemStack> BANNER = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(AbstractDrawnEntity.class, EntityDataSerializers.STRING);
     private static final UUID PULL_SLOWLY_MODIFIER_UUID = UUID.fromString("49B0E52E-48F2-4D89-BED7-4F5DF26F1263");
     private static final UUID PULL_MODIFIER_UUID = UUID.fromString("BA594616-5BE3-46C6-8B40-7D0230C64B77");
     private int lerpSteps;
@@ -601,6 +603,15 @@ public abstract class AbstractDrawnEntity extends Entity implements IEntityAddit
     public ItemStack getBanner() {
         return this.entityData.get(BANNER);
     }
+
+    public void setWoodType(WoodType woodType) {
+        this.entityData.set(WOOD_TYPE, woodType.name());
+    }
+
+    public WoodType getWoodType(){
+        return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
+    }
+
 
     public List<Pair<Holder<BannerPattern>, DyeColor>> getBannerPattern() {
         final ItemStack banner = this.getBanner();

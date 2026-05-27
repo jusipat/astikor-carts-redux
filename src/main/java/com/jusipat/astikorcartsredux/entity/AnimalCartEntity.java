@@ -2,6 +2,7 @@ package com.jusipat.astikorcartsredux.entity;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.config.AstikorCartsConfig;
+import com.jusipat.astikorcartsredux.item.AstikorItems;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -127,6 +128,6 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorCartsRedux.Items.ANIMAL_CART.get();
+        return AstikorItems.ANIMAL_CART.get(this.getWoodType()).asItem();
     }
 }

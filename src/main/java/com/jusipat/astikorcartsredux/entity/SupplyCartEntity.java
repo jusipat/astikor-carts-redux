@@ -6,6 +6,7 @@ import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.client.sound.CartingJukeboxSound;
 import com.jusipat.astikorcartsredux.config.AstikorCartsConfig;
 import com.jusipat.astikorcartsredux.inventory.container.SupplyCartContainer;
+import com.jusipat.astikorcartsredux.item.AstikorItems;
 import com.jusipat.astikorcartsredux.util.CartItemStackHandler;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -219,7 +220,7 @@ public final class SupplyCartEntity extends AbstractDrawnInventoryEntity impleme
 
     @Override
     public Item getCartItem() {
-        return AstikorCartsRedux.Items.SUPPLY_CART.get();
+        return AstikorItems.SUPPLY_CART.get(this.getWoodType()).get().asItem();
     }
 
     @Override

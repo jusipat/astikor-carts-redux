@@ -1,6 +1,7 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
+import com.jusipat.astikorcartsredux.item.AstikorItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
@@ -359,7 +360,7 @@ public final class SupplyCartRenderer extends DrawnRenderer<SupplyCartEntity, Su
     private enum Contents {
         FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS), SupplyCartRenderer::renderFlowers),
         PAINTINGS(s -> s.getItem() == Items.PAINTING, SupplyCartRenderer::renderPaintings),
-        WHEEL(s -> AstikorCartsRedux.Items.WHEEL.filter(s.getItem()::equals).isPresent(), SupplyCartRenderer::renderWheel),
+        WHEEL(s -> AstikorItems.WHEEL.filter(s.getItem()::equals).isPresent(), SupplyCartRenderer::renderWheel),
         SUPPLIES(s -> true, SupplyCartRenderer::renderSupplies);
 
         private final Predicate<? super ItemStack> predicate;

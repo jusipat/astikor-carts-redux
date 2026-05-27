@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.config.AstikorCartsConfig;
 import com.jusipat.astikorcartsredux.inventory.container.PlowContainer;
+import com.jusipat.astikorcartsredux.item.AstikorItems;
 import com.jusipat.astikorcartsredux.util.CartItemStackHandler;
 import com.jusipat.astikorcartsredux.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,10 +23,10 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemStackHandler;
@@ -51,7 +53,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     protected ItemStackHandler initInventory() {
-        return new CartItemStackHandler<PlowEntity>(SLOT_COUNT, this) {
+        return new CartItemStackHandler<>(SLOT_COUNT, this) {
             @Override
             protected void onLoad() {
                 for (int i = 0; i < TOOLS.size(); i++) {
@@ -98,14 +100,35 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
                 final float offset = 38.0F - i * 38.0F;
                 final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
                 final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
-                final Vec3 vec3 = new Vec3(blockPosX, this.getY() - 0.5D, blockPosZ);
-                final BlockPos blockPos = BlockPos.containing(vec3);
+                final BlockPos blockPos = new BlockPos((int) blockPosX, (int) Math.round(this.getY() - 0.75D), (int) blockPosZ);
                 final boolean damageable = stack.isDamageableItem();
                 final int count = stack.getCount();
+                tryBreakBlock(stack, blockPos.above(), level(), player);
                 stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
                 if (damageable && stack.getCount() < count) {
                     this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
                     this.updateSlot(i);
+                }
+            }
+        }
+    }
+
+    private void tryBreakBlock(ItemStack stack, BlockPos pos, Level level, Player player) {
+        BlockState state = level.getBlockState(pos);
+        TagKey<Block> tag;
+        if (stack.getItem() instanceof HoeItem) {
+            tag = AstikorCartsRedux.PLOW_BREAKABLE_HOE;
+        } else if (stack.getItem() instanceof ShovelItem) {
+            tag = AstikorCartsRedux.PLOW_BREAKABLE_SHOVEL;
+        } else if (stack.getItem() instanceof AxeItem) {
+            tag = AstikorCartsRedux.PLOW_BREAKABLE_AXE;
+        } else return;
+        if (state.isAir()) return;
+        if (state.is(tag)) {
+            if (level.removeBlock(pos, false)) {
+                level.destroyBlock(pos, false);
+                if (!state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state)) {
+                    Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, stack);
                 }
             }
         }
@@ -140,7 +163,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorCartsRedux.Items.PLOW.get();
+        return AstikorItems.PLOW.get(this.getWoodType()).asItem();
     }
 
     @Override

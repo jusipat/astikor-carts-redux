@@ -1,6 +1,7 @@
 package com.jusipat.astikorcartsredux.item;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
+import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -22,8 +24,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 
 public final class CartItem extends Item {
-    public CartItem(final Properties properties) {
-        super(properties);
+    private final WoodType woodType;
+    private final String cartType;
+
+    public CartItem(WoodType type, String cartType, Properties settings) {
+        super(settings);
+        this.woodType = type;
+        this.cartType = cartType;
     }
 
     @Override
@@ -47,12 +54,12 @@ public final class CartItem extends Item {
 
             if (result.getType() == HitResult.Type.BLOCK) {
                 final EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(ForgeRegistries.ITEMS.getKey(this));
-                if (type == null) {
-                    return InteractionResultHolder.pass(stack);
-                }
                 final Entity cart = type.create(world);
                 if (cart == null) {
                     return InteractionResultHolder.pass(stack);
+                }
+                if (cart instanceof AbstractDrawnEntity drawn) {
+                    drawn.setWoodType(this.woodType);
                 }
                 cart.moveTo(result.getLocation().x, result.getLocation().y, result.getLocation().z);
                 cart.setYRot((player.getYRot() + 180) % 360);

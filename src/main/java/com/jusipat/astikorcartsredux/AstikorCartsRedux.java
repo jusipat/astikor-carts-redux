@@ -6,6 +6,7 @@ import com.jusipat.astikorcartsredux.entity.PlowEntity;
 import com.jusipat.astikorcartsredux.entity.PostilionEntity;
 import com.jusipat.astikorcartsredux.entity.SupplyCartEntity;
 import com.jusipat.astikorcartsredux.inventory.container.PlowContainer;
+import com.jusipat.astikorcartsredux.item.AstikorItems;
 import com.jusipat.astikorcartsredux.item.CartItem;
 import com.jusipat.astikorcartsredux.network.NetBuilder;
 import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnMessage;
@@ -18,11 +19,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -73,28 +76,57 @@ public final class AstikorCartsRedux {
             Stats.CUSTOM.get(CART_ONE_CM.get(), StatFormatter.DISTANCE);
         }
     }
-    public static final class Items {
-        private static final DeferredRegister<Item> R = DeferredRegister.create(ForgeRegistries.ITEMS, ID);
-
-        public static final RegistryObject<Item> WHEEL, SUPPLY_CART, PLOW, ANIMAL_CART;
-
-        static {
-            WHEEL = R.register("wheel", () -> new Item(new Item.Properties()));
-            final Supplier<Item> cart = () -> new CartItem(new Item.Properties().stacksTo(1));
-            SUPPLY_CART = R.register("supply_cart", cart);
-            PLOW = R.register("plow", cart);
-            ANIMAL_CART = R.register("animal_cart", cart);
-        }
-    }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(Items.ANIMAL_CART);
-            event.accept(Items.SUPPLY_CART);
-            event.accept(Items.PLOW);
-            event.accept(Items.WHEEL);
+            event.accept(AstikorItems.WHEEL);
+
+            event.accept(AstikorItems.OAK_SUPPLY_CART);
+            event.accept(AstikorItems.SPRUCE_SUPPLY_CART);
+            event.accept(AstikorItems.BIRCH_SUPPLY_CART);
+            event.accept(AstikorItems.ACACIA_SUPPLY_CART);
+            event.accept(AstikorItems.CHERRY_SUPPLY_CART);
+            event.accept(AstikorItems.JUNGLE_SUPPLY_CART);
+            event.accept(AstikorItems.DARK_OAK_SUPPLY_CART);
+            event.accept(AstikorItems.CRIMSON_SUPPLY_CART);
+            event.accept(AstikorItems.WARPED_SUPPLY_CART);
+            event.accept(AstikorItems.MANGROVE_SUPPLY_CART);
+            event.accept(AstikorItems.BAMBOO_SUPPLY_CART);
+
+            event.accept(AstikorItems.OAK_ANIMAL_CART);
+            event.accept(AstikorItems.SPRUCE_ANIMAL_CART);
+            event.accept(AstikorItems.BIRCH_ANIMAL_CART);
+            event.accept(AstikorItems.ACACIA_ANIMAL_CART);
+            event.accept(AstikorItems.CHERRY_ANIMAL_CART);
+            event.accept(AstikorItems.JUNGLE_ANIMAL_CART);
+            event.accept(AstikorItems.DARK_OAK_ANIMAL_CART);
+            event.accept(AstikorItems.CRIMSON_ANIMAL_CART);
+            event.accept(AstikorItems.WARPED_ANIMAL_CART);
+            event.accept(AstikorItems.MANGROVE_ANIMAL_CART);
+            event.accept(AstikorItems.BAMBOO_ANIMAL_CART);
+
+            event.accept(AstikorItems.OAK_PLOW);
+            event.accept(AstikorItems.SPRUCE_PLOW);
+            event.accept(AstikorItems.BIRCH_PLOW);
+            event.accept(AstikorItems.ACACIA_PLOW);
+            event.accept(AstikorItems.CHERRY_PLOW);
+            event.accept(AstikorItems.JUNGLE_PLOW);
+            event.accept(AstikorItems.DARK_OAK_PLOW);
+            event.accept(AstikorItems.CRIMSON_PLOW);
+            event.accept(AstikorItems.WARPED_PLOW);
+            event.accept(AstikorItems.MANGROVE_PLOW);
+            event.accept(AstikorItems.BAMBOO_PLOW);
+
+
+            //HAND_CART.values().forEach(event::accept);
+            //REAPER.values().forEach(event::accept);
+            //SEED_DRILL.values().forEach(event::accept);
         }
     }
+
+    public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID, "plow_breakable/hoe"));
+    public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID,"plow_breakable/shovel"));
+    public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID,"plow_breakable/axe"));
 
     public static final class EntityTypes {
         private EntityTypes() {
@@ -152,9 +184,9 @@ public final class AstikorCartsRedux {
     public AstikorCartsRedux() {
 
         final Initializer.Context ctx = new ClientModEvents.InitContext();
-        DistExecutor.runForDist(() -> ClientInitializer::new, () -> ServerInitializer::new).init(ctx);
+        DistExecutor.safeRunForDist(() -> ClientInitializer::new, () -> ServerInitializer::new).init(ctx);
         ctx.modBus().addListener(EventPriority.NORMAL, this::setup);
-        Items.R.register(ctx.modBus());;
+        AstikorItems.register(ctx.modBus());
         EntityTypes.R.register(ctx.modBus());
         SoundEvents.SOUND_EVENTS.register(ctx.modBus());
         ContainerTypes.R.register(ctx.modBus());
