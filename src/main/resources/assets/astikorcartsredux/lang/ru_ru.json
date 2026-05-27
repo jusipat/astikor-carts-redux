@@ -1,17 +1,16 @@
 {
-  "item.astikorcartsredux.supply_cart": "Грузовая телега",
+  "item.astikorcartsredux.supply_cart": "Телега",
   "item.astikorcartsredux.plow": "Плуг",
-  "item.astikorcartsredux.animal_cart": "Телега для животных",
   "item.astikorcartsredux.wheel": "Колесо",
+  "item.astikorcartsredux.animal_cart": "Телега для мобов",
   "itemGroup.astikorcartsredux": "AstikorCarts",
-  "entity.astikorcartsredux.supply_cart": "Грузовая телега",
+  "entity.astikorcartsredux.supply_cart": "Телега",
   "entity.astikorcartsredux.plow": "Плуг",
-  "entity.astikorcartsredux.animal_cart": "Телега для животных",
-  "entity.astikorcartsredux.postilion": "Форейтор",
+  "entity.astikorcartsredux.animal_cart": "Телега для мобов",
   "key.categories.astikorcartsredux": "AstikorCarts",
   "key.astikorcartsredux.desc": "Клавиша действия",
-  "subtitles.astikorcartsredux.cart.attached": "Телега присоединена",
-  "subtitles.astikorcartsredux.cart.detached": "Телега отсоединена",
-  "subtitles.astikorcartsredux.cart.placed": "Телега размещена",
-  "stat.astikorcartsredux.cart_one_cm": "Расстояние на телеге"
+  "subtitles.astikorcartsredux.cart.attached": "Телега прикрепляется",
+  "subtitles.astikorcartsredux.cart.detached": "Телега открепляется",
+  "subtitles.astikorcartsredux.cart.placed": "Телега расположена",
+  "stat.astikorcartsredux.cart_one_cm": "Проеханная с телегой дистанция"
 }

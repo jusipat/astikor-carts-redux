@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "astikorcartsredux:item/wheel"
+    "layer0": "astikorcartsredux:item/warped_animal_cart"
   }
 }

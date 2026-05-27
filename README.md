@@ -19,9 +19,9 @@ Then, add the artifact to your build.gradles dependencies:
 
 ```
 dependencies {
-    // compile 'de.mennomax:astikorcarts-<Minecraft-Version>:<AstikorCarts-Version>'
+    // compile 'de.mennomax:astikorcartsredux-<Minecraft-Version>:<AstikorCarts-Version>'
     // For Minecraft 1.15.2 and AstikorCarts 1.0.2, you would have to add:
-    compile 'de.mennomax:astikorcarts-1.15.2:1.0.2'
+    compile 'de.mennomax:astikorcartsredux-1.15.2:1.0.2'
     
 }
 ```

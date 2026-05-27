@@ -36,7 +36,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 public final class ClientInitializer extends CommonInitializer {
-    private final KeyMapping action = new KeyMapping("key.astikorcarts.desc", GLFW.GLFW_KEY_R, "key.categories.astikorcarts");
+    private final KeyMapping action = new KeyMapping("key.astikorcartsredux.desc", GLFW.GLFW_KEY_R, "key.categories.astikorcartsredux");
 
     @Override
     public void init(final Context mod) {
