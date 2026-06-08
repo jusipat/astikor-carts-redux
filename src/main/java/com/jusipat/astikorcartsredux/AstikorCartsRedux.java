@@ -1,222 +1,413 @@
 package com.jusipat.astikorcartsredux;
 
-import com.jusipat.astikorcartsredux.client.ClientInitializer;
-import com.jusipat.astikorcartsredux.entity.AnimalCartEntity;
-import com.jusipat.astikorcartsredux.entity.PlowEntity;
-import com.jusipat.astikorcartsredux.entity.PostilionEntity;
-import com.jusipat.astikorcartsredux.entity.SupplyCartEntity;
-import com.jusipat.astikorcartsredux.inventory.container.PlowContainer;
-import com.jusipat.astikorcartsredux.item.AstikorItems;
+import com.jusipat.astikorcartsredux.container.PlowMenu;
+import com.jusipat.astikorcartsredux.container.SeedDrillMenu;
+import com.jusipat.astikorcartsredux.entity.*;
+import com.jusipat.astikorcartsredux.entity.ai.goal.AvoidCartGoal;
+import com.jusipat.astikorcartsredux.entity.ai.goal.PullCartGoal;
+import com.jusipat.astikorcartsredux.entity.ai.goal.RideCartGoal;
 import com.jusipat.astikorcartsredux.item.CartItem;
-import com.jusipat.astikorcartsredux.network.NetBuilder;
-import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnMessage;
-import com.jusipat.astikorcartsredux.network.serverbound.ActionKeyMessage;
-import com.jusipat.astikorcartsredux.network.serverbound.OpenSupplyCartMessage;
-import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowMessage;
-import com.jusipat.astikorcartsredux.server.ServerInitializer;
-import net.minecraft.core.registries.Registries;
+import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnPayload;
+import com.jusipat.astikorcartsredux.util.GoalAdder;
+import com.jusipat.astikorcartsredux.util.NiftyWorld;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.commons.lang3.function.TriFunction;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
+import com.mojang.logging.LogUtils;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Mod(AstikorCartsRedux.ID)
-public final class AstikorCartsRedux {
-    public static final String ID = "astikorcartsredux";
+// The value here should match an entry in the META-INF/neoforge.neoforge.mods.toml file
+@Mod(AstikorCartsRedux.MODID)
+public class AstikorCartsRedux {
+    // Define mod id in a common place for everything to reference
+    public static final String MODID = "astikorcartsredux";
+    // Directly reference a slf4j logger
+    public static final Logger LOGGER = LogUtils.getLogger();
+    // Create a Deferred Register to hold Blocks which will all be registered under the "astikorcartsredux" namespace
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, AstikorCartsRedux.MODID);
+    // Create a Deferred Register to hold Items which will all be registered under the "astikorcartsredux" namespace
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE ,AstikorCartsRedux.MODID);
+    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "astikorcartsredux" namespace
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<ResourceLocation> AC_STATS = DeferredRegister.create(Registries.CUSTOM_STAT, AstikorCartsRedux.MODID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, AstikorCartsRedux.MODID);
+    private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(Registries.SOUND_EVENT, AstikorCartsRedux.MODID);
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AstikorCartsRedux.class);
+    private static final List<Runnable> STAT_SETUP = new ArrayList<>();
 
-    public static ResourceLocation prefix(String name) {
-        return new ResourceLocation(ID, name.toLowerCase(Locale.ROOT));
+    public static final RegistryObject<ResourceLocation> CART_ONE_CM = makeACStat();
+    private static RegistryObject<ResourceLocation> makeACStat() {
+        ResourceLocation resourcelocation = new ResourceLocation(AstikorCartsRedux.MODID, "cart_one_cm");
+        STAT_SETUP.add(() -> Stats.CUSTOM.get(resourcelocation, StatFormatter.DEFAULT));
+        return AC_STATS.register("cart_one_cm", () -> resourcelocation);
     }
 
-    public static final SimpleChannel CHANNEL = new NetBuilder(new ResourceLocation(ID, "main"))
-            .version(1).optionalServer().requiredClient()
-            .serverbound(ActionKeyMessage::new).consumer(() -> ActionKeyMessage::handle)
-            .serverbound(ToggleSlowMessage::new).consumer(() -> ToggleSlowMessage::handle)
-            .clientbound(UpdateDrawnMessage::new).consumer(() -> new UpdateDrawnMessage.Handler())
-            .serverbound(OpenSupplyCartMessage::new).consumer(() -> OpenSupplyCartMessage::handle)
-            .build();
+    public static final RegistryObject<Item> WHEEL = ITEMS.register("wheel", () -> new Item(new Item.Properties()));
+
+    private static final TriFunction<WoodType, String, FeatureFlag[], RegistryObject<CartItem>> CART_ITEM_SUPPLIER =
+            (wood, type, flags) ->
+                    ITEMS.register(
+                            wood.name() + "_" + type,
+                            () -> new CartItem(
+                                    wood,
+                                    type,
+                                    new Item.Properties().stacksTo(1).requiredFeatures(flags)
+                            )
+                    );
 
 
-    public class ACStats {
+    public static final Map<String, Map<WoodType, RegistryObject<CartItem>>> CARTS = new HashMap<>();
 
-        public static final DeferredRegister<ResourceLocation> AC_STATS = DeferredRegister.create(Registries.CUSTOM_STAT, ID);
-        public static final RegistryObject<ResourceLocation> CART_ONE_CM = AC_STATS.register("cart_one_cm", () -> makeStat("cart_one_cm"));
-        private static ResourceLocation makeStat(String key) {
-            return new ResourceLocation(ID, key);
-        }
-        public static void initStats() {
-            Stats.CUSTOM.get(CART_ONE_CM.get(), StatFormatter.DISTANCE);
+    public static final String[] CART_TYPES = {
+            "supply_cart",
+            "hand_cart",
+            "plow",
+            "seed_drill",
+            "reaper",
+            "animal_cart"
+    };
+
+    public static final WoodType[] VANILLA_WOOD_TYPES = {
+            WoodType.OAK,
+            WoodType.SPRUCE,
+            WoodType.BIRCH,
+            WoodType.ACACIA,
+            WoodType.CHERRY,
+            WoodType.JUNGLE,
+            WoodType.DARK_OAK,
+            WoodType.CRIMSON,
+            WoodType.WARPED,
+            WoodType.MANGROVE,
+            WoodType.BAMBOO
+    };
+
+    // Creates a creative tab with the id "astikorcartsredux:example_tab" for the example item, that is placed after the combat tab
+    public static final RegistryObject<CreativeModeTab> ASTIKORCARTSREDUX_TAB = CREATIVE_MODE_TABS.register("astikorcartsredux_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.astikorcartsredux"))
+            .withTabsBefore(CreativeModeTabs.COMBAT)
+            .icon(() -> WHEEL.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(WHEEL.get());
+                CARTS.values().forEach(map -> {
+                    map.values().forEach(cart -> { output.accept(cart.get()); });
+                });
+            }).build());
+
+    static {
+        FeatureFlag[] flags = {};
+
+        for (String type : CART_TYPES) {
+            Map<WoodType, RegistryObject<CartItem>> perWoodMap = new HashMap<>();
+
+            for (WoodType wood : VANILLA_WOOD_TYPES) {
+                String registryName = wood.name() + "_" + type;
+
+                RegistryObject<CartItem> item = ITEMS.register(
+                        registryName,
+                        () -> new CartItem(
+                                wood,
+                                type,
+                                new Item.Properties().stacksTo(1).requiredFeatures(flags))
+                );
+
+                perWoodMap.put(wood, item);
+            }
+
+            CARTS.put(type, perWoodMap);
         }
     }
 
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(AstikorItems.WHEEL);
+    public static MinecraftServer server = null;
 
-            event.accept(AstikorItems.OAK_SUPPLY_CART);
-            event.accept(AstikorItems.SPRUCE_SUPPLY_CART);
-            event.accept(AstikorItems.BIRCH_SUPPLY_CART);
-            event.accept(AstikorItems.ACACIA_SUPPLY_CART);
-            event.accept(AstikorItems.CHERRY_SUPPLY_CART);
-            event.accept(AstikorItems.JUNGLE_SUPPLY_CART);
-            event.accept(AstikorItems.DARK_OAK_SUPPLY_CART);
-            event.accept(AstikorItems.CRIMSON_SUPPLY_CART);
-            event.accept(AstikorItems.WARPED_SUPPLY_CART);
-            event.accept(AstikorItems.MANGROVE_SUPPLY_CART);
-            event.accept(AstikorItems.BAMBOO_SUPPLY_CART);
+    // All vanilla sounds use variable range events.
+    public static final Holder<SoundEvent> ATTACH_SOUND = SOUND_EVENTS.register(
+            "entity.cart.attach",
+            // Takes in the registry name
+            SoundEvent::createVariableRangeEvent
+    );
 
-            event.accept(AstikorItems.OAK_ANIMAL_CART);
-            event.accept(AstikorItems.SPRUCE_ANIMAL_CART);
-            event.accept(AstikorItems.BIRCH_ANIMAL_CART);
-            event.accept(AstikorItems.ACACIA_ANIMAL_CART);
-            event.accept(AstikorItems.CHERRY_ANIMAL_CART);
-            event.accept(AstikorItems.JUNGLE_ANIMAL_CART);
-            event.accept(AstikorItems.DARK_OAK_ANIMAL_CART);
-            event.accept(AstikorItems.CRIMSON_ANIMAL_CART);
-            event.accept(AstikorItems.WARPED_ANIMAL_CART);
-            event.accept(AstikorItems.MANGROVE_ANIMAL_CART);
-            event.accept(AstikorItems.BAMBOO_ANIMAL_CART);
+    public static final Holder<SoundEvent> DETACH_SOUND = SOUND_EVENTS.register(
+            "entity.cart.detach",
+            // Takes in the registry name
+            SoundEvent::createVariableRangeEvent
+    );
 
-            event.accept(AstikorItems.OAK_PLOW);
-            event.accept(AstikorItems.SPRUCE_PLOW);
-            event.accept(AstikorItems.BIRCH_PLOW);
-            event.accept(AstikorItems.ACACIA_PLOW);
-            event.accept(AstikorItems.CHERRY_PLOW);
-            event.accept(AstikorItems.JUNGLE_PLOW);
-            event.accept(AstikorItems.DARK_OAK_PLOW);
-            event.accept(AstikorItems.CRIMSON_PLOW);
-            event.accept(AstikorItems.WARPED_PLOW);
-            event.accept(AstikorItems.MANGROVE_PLOW);
-            event.accept(AstikorItems.BAMBOO_PLOW);
+    public static final Holder<SoundEvent> PLACE_SOUND = SOUND_EVENTS.register(
+            "entity.cart.place",
+            // Takes in the registry name
+            SoundEvent::createVariableRangeEvent
+    );
 
+    public static final Supplier<EntityType<SupplyCartEntity>> SUPPLY_CART_ENTITY =
+            ENTITY_TYPES.register( "supply_cart", () -> EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC)
+                    .sized(1.5f, 1.4f)
+                    .build("supply_cart"));
 
-            //HAND_CART.values().forEach(event::accept);
-            //REAPER.values().forEach(event::accept);
-            //SEED_DRILL.values().forEach(event::accept);
-        }
-    }
+    public static final Supplier<EntityType<AnimalCartEntity>> ANIMAL_CART_ENTITY = ENTITY_TYPES.register(
+            "animal_cart", () -> EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f)
+                    .build("animal_cart"));
 
-    public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID, "plow_breakable/hoe"));
-    public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID,"plow_breakable/shovel"));
-    public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, new ResourceLocation(AstikorCartsRedux.ID,"plow_breakable/axe"));
+    public static final Supplier<EntityType<PlowEntity>> PLOW_ENTITY = ENTITY_TYPES.register(
+            "plow", () -> EntityType.Builder.of(PlowEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f)
+                    .build("plow"));
 
-    public static final class EntityTypes {
-        private EntityTypes() {
-        }
+    public static final Supplier<EntityType<HandCartEntity>> HAND_CART_ENTITY = ENTITY_TYPES.register(
+            "hand_cart", () -> EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.1f)
+                    .build("hand_cart"));
 
-        private static final DeferredRegister<EntityType<?>> R = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ID);
+    public static final Supplier<EntityType<SeedDrillEntity>> SEED_DRILL_ENTITY = ENTITY_TYPES.register(
+            "seed_drill", () -> EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f)
+                    .build("seed_drill"));
 
-        public static final RegistryObject<EntityType<SupplyCartEntity>> SUPPLY_CART;
-        public static final RegistryObject<EntityType<PlowEntity>> PLOW;
-        public static final RegistryObject<EntityType<AnimalCartEntity>> ANIMAL_CART;
-        public static final RegistryObject<EntityType<PostilionEntity>> POSTILION;
+    public static final Supplier<EntityType<ReaperEntity>> REAPER_ENTITY = ENTITY_TYPES.register(
+            "reaper", () -> EntityType.Builder.of(ReaperEntity::new, MobCategory.MISC)
+                    .sized(1.3f, 1.4f)
+                    .build("reaper"));
 
-        static {
-            SUPPLY_CART = R.register("supply_cart", () -> EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC)
-                    .sized(1.5F, 1.4F)
-                    .build(ID + ":supply_cart"));
-            PLOW = R.register("plow", () -> EntityType.Builder.of(PlowEntity::new, MobCategory.MISC)
-                    .sized(1.3F, 1.4F)
-                    .build(ID + ":plow"));
-            ANIMAL_CART = R.register("animal_cart", () -> EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC)
-                    .sized(1.3F, 1.4F)
-                    .build(ID + ":animal_cart"));
-            POSTILION = R.register("postilion", () -> EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+    public static final Supplier<EntityType<PostilionEntity>> POSTILION_ENTITY = ENTITY_TYPES.register(
+            "postilion", () -> EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f)
                     .noSummon()
                     .noSave()
-                    .build(ID + ":postilion"));
-        }
+                    .build("postilion"));
+
+
+    public static final GoalAdder<Mob> MOB_GOAL_ADDER = GoalAdder.mobGoal(Mob.class)
+            .add(1, PullCartGoal::new)
+            .add(1, RideCartGoal::new)
+            .build();
+
+    public static final GoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = GoalAdder.mobGoal(PathfinderMob.class)
+            .add(3, mob -> new AvoidCartGoal<>(mob, SupplyCartEntity.class, 3.0f, 0.5f))
+            .add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
+            .build();
+
+    public static final Supplier<MenuType<PlowMenu>> PLOW_MENU_TYPE = MENUS.register("plow", () -> new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS));
+    public static final Supplier<MenuType<SeedDrillMenu>> SEED_DRILL_MENU_TYPE = MENUS.register("seed_drill", () -> new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS));
+
+    public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/hoe"));
+    public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/shovel"));
+    public static final TagKey<Block> PLOW_BREAKABLE_AXE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/axe"));
+    public static final TagKey<Item> SEED_DRILL_PLANTABLE = TagKey.create(Registries.ITEM, AstikorCartsRedux.resLoc("seed_drill_plantable"));
+
+
+    // The constructor for the mod class is the first code that is run when your mod is loaded.
+    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    public AstikorCartsRedux(IEventBus modEventBus, ModContainer modContainer) {
+        // Register the commonSetup method for modloading
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerPayloads);
+
+        MinecraftForge.EVENT_BUS.addListener(AstikorCartsRedux::onEntityJoinWorld);
+        MinecraftForge.EVENT_BUS.addListener(AstikorCartsRedux::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(AstikorCartsRedux::onEntityInteract);
+        MinecraftForge.EVENT_BUS.addListener(AstikorCartsRedux::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(AstikorCartsRedux::onServerStopped);
+
+        modEventBus.<EntityAttributeCreationEvent>addListener(e -> {e.put(POSTILION_ENTITY.get(), LivingEntity.createLivingAttributes().build());});
+
+        // Register the Deferred Register to the mod event bus so blocks get registered
+        BLOCKS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so items get registered
+        ITEMS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so tabs get registered
+        CREATIVE_MODE_TABS.register(modEventBus);
+
+        MENUS.register(modEventBus);
+
+        ENTITY_TYPES.register(modEventBus);
+
+        AC_STATS.register(modEventBus);
+
+        SOUND_EVENTS.register(modEventBus);
+
+        // Register the item to a creative tab
+        modEventBus.addListener(this::addCreative);
+
+        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
+        modContainer.registerConfig(ModConfig.Type.COMMON, AstikorCartsReduxConfig.spec());
     }
 
-    public static final class SoundEvents {
-
-        private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ID);
-
-        public static final RegistryObject<SoundEvent> CART_ATTACHED = registerSoundEvent("entity.cart.attach");
-        public static final RegistryObject<SoundEvent> CART_DETACHED = registerSoundEvent("entity.cart.detach");
-        public static final RegistryObject<SoundEvent> CART_PLACED = registerSoundEvent("entity.cart.place");
-
-        private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
-            ResourceLocation id = new ResourceLocation(ID, name);
-            return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(id));
-        }
+    public static <T extends Entity> Supplier<EntityType<T>> register(String id, Supplier<EntityType<T>> supplier) {
+        return ENTITY_TYPES.register(id, supplier);
     }
 
-    public static final class ContainerTypes {
-        private ContainerTypes() {
-        }
-
-        private static final DeferredRegister<MenuType<?>> R = DeferredRegister.create(ForgeRegistries.MENU_TYPES, ID);
-
-        public static final RegistryObject<MenuType<PlowContainer>> PLOW_CART = R.register("plow", () -> IForgeMenuType.create(PlowContainer::new));
-
-
+    public static <I extends Item> DeferredItem<I> register(String id, Function<Item.Properties, I> function) {
+        return ITEMS.register(id, () -> function.apply(new Item.Properties()));
     }
-    public AstikorCartsRedux() {
 
-        final Initializer.Context ctx = new ClientModEvents.InitContext();
-        DistExecutor.safeRunForDist(() -> ClientInitializer::new, () -> ServerInitializer::new).init(ctx);
-        ctx.modBus().addListener(EventPriority.NORMAL, this::setup);
-        AstikorItems.register(ctx.modBus());
-        EntityTypes.R.register(ctx.modBus());
-        SoundEvents.SOUND_EVENTS.register(ctx.modBus());
-        ContainerTypes.R.register(ctx.modBus());
-        ACStats.AC_STATS.register(ctx.modBus());
-
-        ctx.modBus().addListener(this::addCreative);
+    public static ResourceLocation resLoc(String name) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, name);
     }
-    private void setup(final FMLCommonSetupEvent event) {
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        // Some common setup code
+        LOGGER.info("HELLO FROM COMMON SETUP");
         event.enqueueWork(() -> {
-            ACStats.initStats();
+            STAT_SETUP.forEach(Runnable::run);
         });
     }
 
-    public static class ClientModEvents {
+    private static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
+        Entity entity = event.getTarget();
+        Entity rider = entity.getControllingPassenger();
 
-        private static class InitContext implements Initializer.Context {
-            @Override
-            public ModLoadingContext context() {
-                return ModLoadingContext.get();
-            }
-
-            @Override
-            public IEventBus bus() {
-                return MinecraftForge.EVENT_BUS;
-            }
-
-            @Override
-            public IEventBus modBus() {
-                return FMLJavaModLoadingContext.get().getModEventBus();
-            }
+        if (rider instanceof PostilionEntity) {
+            rider.stopRiding();
         }
+
+        event.setCancellationResult(InteractionResult.PASS);
+    }
+
+    private static void onEntityJoinWorld(EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+
+        MOB_GOAL_ADDER.onEntityJoinWorld(entity);
+        PATHFINDER_GOAL_ADDER.onEntityJoinWorld(entity);
+    }
+
+    private static void onServerTick(TickEvent.ServerTickEvent event) {
+        MinecraftServer server = event.getServer();
+
+        for (ResourceKey<Level> levelKey : server.levelKeys()) {
+            NiftyWorld.getServer(server, levelKey).tick();
+        }
+    }
+
+    private static void onServerStarted(ServerStartedEvent event) {
+        server = event.getServer();
+    }
+
+    private static void onServerStopped(ServerStoppedEvent event) {
+        server = null;
+    }
+
+    // add to creative menus
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(WHEEL);
+        }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            CARTS.values().forEach(byWood -> {
+                Arrays.stream(VANILLA_WOOD_TYPES).forEach(woodType -> {
+                    event.accept(byWood.get(woodType));
+                });
+            });
+        }
+    }
+
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(MODID, "main"),
+            () -> "1",
+            "1"::equals,
+            "1"::equals
+    );
+
+    private static int packetId = 0;
+
+    private void registerPackets() {
+        // Bidirectional - UpdateDrawnPayload
+        CHANNEL.registerMessage(packetId++, UpdateDrawnPayload.class,
+                UpdateDrawnPayload::encode,
+                UpdateDrawnPayload::decode,
+                (payload, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() ->
+                            UpdateDrawnPayload.handle(payload, context.getSender() != null
+                                    ? context.getSender().level()        // server-side: sender is the player
+                                    : Minecraft.getInstance().level));    // client-side: use local level
+                    context.setPacketHandled(true);
+                });
+
+        // Server-bound - ActionKeyPayload
+        CHANNEL.registerMessage(packetId++, ActionKeyPayload.class,
+                ActionKeyPayload::encode,
+                ActionKeyPayload::decode,
+                (payload, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> ActionKeyPayload.handle(context));
+                    context.setPacketHandled(true);
+                });
+
+        // Server-bound - OpenSupplyCartPayload
+        CHANNEL.registerMessage(packetId++, OpenSupplyCartPayload.class,
+                OpenSupplyCartPayload::encode,
+                OpenSupplyCartPayload::decode,
+                (payload, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> OpenSupplyCartPayload.handle(context));
+                    context.setPacketHandled(true);
+                });
+
+        // Server-bound - ToggleSlowPayload
+        CHANNEL.registerMessage(packetId++, ToggleSlowPayload.class,
+                ToggleSlowPayload::encode,
+                ToggleSlowPayload::decode,
+                (payload, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() ->
+                            ToggleSlowPayload.handle(context.getSender()));
+                    context.setPacketHandled(true);
+                });
+
+        // Server-bound - RequestCartUpdatePayload
+        CHANNEL.registerMessage(packetId++, RequestCartUpdatePayload.class,
+                RequestCartUpdatePayload::encode,
+                RequestCartUpdatePayload::decode,
+                (payload, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> RequestCartUpdatePayload.handle(payload, context));
+                    context.setPacketHandled(true);
+                });
     }
 }
