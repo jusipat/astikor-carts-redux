@@ -70,5 +70,27 @@ public class DeDeLanguageProvider extends LanguageProvider {
         add("item.seed_drill.tooltip2", "Sie hat Platz für 9 Stapel Samen");
         add("item.reaper.tooltip1", "Diese Maschine kann Felder abernten");
         add("item.reaper.tooltip2", "Sie funktioniert nur, wenn ein Spieler sie bedient");
+        add("advancements.astikorcartsredux.animal_cart_steer.description", "Steuere einen Tierkarren in welchem du sitzt");
+        add("advancements.astikorcartsredux.animal_cart_steer.title", "Die Zügel halten");
+        add("advancements.astikorcartsredux.attach_banner.description", "Bring einen Banner an einen Transportkarren, Tierkarren oder Wagen an");
+        add("advancements.astikorcartsredux.attach_banner.title", "Karren mit Banner");
+        add("advancements.astikorcartsredux.hand_cart_one_k.description", "Ziehe einen Handkarren 1000 Blöcke");
+        add("advancements.astikorcartsredux.hand_cart_one_k.title", "Erweiterter Inventar");
+        add("advancements.astikorcartsredux.place_cart.description", "Bau einen Karren und platziere ihn");
+        add("advancements.astikorcartsredux.place_cart.title", "Herumkarren");
+        add("advancements.astikorcartsredux.plow_create_path.description", "Verwende eine Schaufel in einem Pflug um einen Weg zu schaffen");
+        add("advancements.astikorcartsredux.plow_create_path.title", "Straße Ins Nirgendwo");
+        add("advancements.astikorcartsredux.plow_strip_log.description", "Verwende eine Axt in einem Pflug um Holz abzuschaben");
+        add("advancements.astikorcartsredux.plow_strip_log.title", "Hochgeschwindigkeitsentrindung");
+        add("advancements.astikorcartsredux.plow_till_ground.description", "Verwende eine Hacke in einem Pflug um den Boden zu pflügen");
+        add("advancements.astikorcartsredux.plow_till_ground.title", "Bodenbrechende Innovation");
+        add("advancements.astikorcartsredux.reaper_harvest.description", "Bring die Ernte mit einer Mähmaschine ein");
+        add("advancements.astikorcartsredux.reaper_harvest.title", "Mähmaschine");
+        add("advancements.astikorcartsredux.seed_drill_plant.description", "Pflanze ein Feld mit einer Sämaschine");
+        add("advancements.astikorcartsredux.seed_drill_plant.title", "Hochgeschwindigkeitbepflanzung");
+        add("advancements.astikorcartsredux.supply_cart_filled.description", "Zieh einen Transportwagen der voll ist");
+        add("advancements.astikorcartsredux.supply_cart_filled.title", "Bis zum Rand gefüllt");
+        add("advancements.astikorcartsredux.wagon_cart_full.description", "Ziehe einen Wagen mit vier Passagiere");
+        add("advancements.astikorcartsredux.wagon_cart_full.title", "Alle an Bord!");
     }
 }

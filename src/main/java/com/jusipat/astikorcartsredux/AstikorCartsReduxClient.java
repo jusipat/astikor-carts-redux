@@ -9,6 +9,7 @@ import com.jusipat.astikorcartsredux.client.renderer.texture.AssembledTextureFac
 import com.jusipat.astikorcartsredux.client.renderer.texture.Material;
 import com.jusipat.astikorcartsredux.client.screen.PlowScreen;
 import com.jusipat.astikorcartsredux.client.screen.SeedDrillScreen;
+import com.jusipat.astikorcartsredux.datagen.ModAdvancementProvider;
 import com.jusipat.astikorcartsredux.datagen.ModItemModelProvider;
 import com.jusipat.astikorcartsredux.datagen.ModRecipeProvider;
 import com.jusipat.astikorcartsredux.datagen.lang.DeDeLanguageProvider;
@@ -28,6 +29,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -92,6 +94,7 @@ public class AstikorCartsReduxClient {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
         // other providers here
         generator.addProvider(
@@ -110,30 +113,11 @@ public class AstikorCartsReduxClient {
                 event.includeClient(),
                 new EnUsLanguageProvider(output, AstikorCartsRedux.MODID, "en_us")
         );
+        generator.addProvider(
+                event.includeServer(),
+                new ModAdvancementProvider(output, lookupProvider, existingFileHelper)
+        );
     }
-
-//
-//    @SubscribeEvent // on the mod event bus
-//    public static void gatherData(GatherDataEvent event) {
-//        event.createProvider(ModRecipeProvider.Runner::new);
-//        event.createProvider(ModItemModelProvider::new);
-//        event.createProvider(AstikorCartsReduxEnUsLanguageProvider::new);
-//        event.createProvider(AstikorCartsReduxDeDeLanguageProvider::new);
-//    }
-
-    // on the mod event bus (client side 1.21.8 impl that needs to be backported)
-//    public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-//        final PayloadRegistrar registrar = event.registrar("1");
-//        registrar.playToClient(UpdateDrawnPayload.TYPE, UpdateDrawnPayload.CODEC,
-//                (payload, context) -> {
-//                    context.enqueueWork(() -> {
-//                        Minecraft mc = Minecraft.getInstance();
-//                        if (mc.level != null) {
-//                            UpdateDrawnPayload.handle(payload, mc.level);
-//                        }
-//                    });
-//                });
-//    }
 
     @Unique
     private static final ImmutableMap<WoodType, String> LOG_NAME_OVERRIDE = ImmutableMap.of(

@@ -1,5 +1,7 @@
 package com.jusipat.astikorcartsredux;
 
+import com.google.common.collect.ImmutableMap;
+import com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers;
 import com.jusipat.astikorcartsredux.container.PlowMenu;
 import com.jusipat.astikorcartsredux.container.SeedDrillMenu;
 import com.jusipat.astikorcartsredux.entity.*;
@@ -11,7 +13,6 @@ import com.jusipat.astikorcartsredux.network.clientbound.UpdateDrawnPayload;
 import com.jusipat.astikorcartsredux.network.serverbound.*;
 import com.jusipat.astikorcartsredux.util.GoalAdder;
 import com.jusipat.astikorcartsredux.util.NiftyWorld;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -27,8 +28,6 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -156,7 +155,7 @@ public class AstikorCartsRedux {
 								wood,
 								type,
 								new Item.Properties().stacksTo(1).requiredFeatures(flags))
-				); // todo: check on compilation if this registration trifunction works
+				);
 
 				perWoodMap.put(wood, item);
 			}
@@ -232,10 +231,26 @@ public class AstikorCartsRedux {
 	public static final GoalAdder<PathfinderMob> PATHFINDER_GOAL_ADDER = GoalAdder.mobGoal(PathfinderMob.class)
 			.add(3, mob -> new AvoidCartGoal<>(mob, SupplyCartEntity.class, 3.0f, 0.5f))
 			.add(3, mob -> new AvoidCartGoal<>(mob, PlowEntity.class, 3.0f, 0.5f))
+			.add(3, mob -> new AvoidCartGoal<>(mob, ReaperEntity.class, 3.0f, 0.5f))
+			.add(3, mob -> new AvoidCartGoal<>(mob, SeedDrillEntity.class, 3.0f, 0.5f))
 			.build();
 
 	public static final Supplier<MenuType<PlowMenu>> PLOW_MENU_TYPE = MENUS.register("plow", () -> new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS));
 	public static final Supplier<MenuType<SeedDrillMenu>> SEED_DRILL_MENU_TYPE = MENUS.register("seed_drill", () -> new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS));
+
+	public static final Map<Supplier<? extends EntityType<?>>, ResourceLocation> CART_PULL_CM =
+			ImmutableMap.of(
+					SUPPLY_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "supply_cart_pull_cm"),
+					HAND_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "hand_cart_pull_cm"),
+					ANIMAL_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "animal_cart_pull_cm"),
+					PLOW_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "plow_pull_cm"),
+					REAPER_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "reaper_pull_cm"),
+					SEED_DRILL_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "seed_drill_pull_cm")
+			);
+
+	public static final ResourceLocation RIDE_CART_CM = ResourceLocation.fromNamespaceAndPath(MODID, "ride_cart_cm");
+	public static final ResourceLocation STEER_ANIMAL_CART_CM = ResourceLocation.fromNamespaceAndPath(MODID, "steer_animal_cart_cm");
+	public static final ResourceLocation STEER_REAPER_CM = ResourceLocation.fromNamespaceAndPath(MODID, "steer_reaper_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/shovel"));
@@ -272,6 +287,8 @@ public class AstikorCartsRedux {
 		AC_STATS.register(modEventBus);
 
 		SOUND_EVENTS.register(modEventBus);
+
+		ACCriteriaTriggers.TRIGGERS.register(modEventBus);
 
 		// Register the item to a creative tab
 		modEventBus.addListener(this::addCreative);

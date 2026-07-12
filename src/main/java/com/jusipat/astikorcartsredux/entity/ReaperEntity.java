@@ -2,7 +2,9 @@ package com.jusipat.astikorcartsredux.entity;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.AstikorCartsReduxConfig;
+import com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -104,6 +106,7 @@ public class ReaperEntity extends AbstractDrawnEntity {
             BlockState state = level().getBlockState(pos);
             if (state.is(BlockTags.CROPS)) {
                 if (level().removeBlock(pos, false)) {
+                    ACCriteriaTriggers.REAPER_HARVEST.get().trigger((ServerPlayer) player, state);
                     level().destroyBlock(pos, false);
                     if (!state.requiresCorrectToolForDrops()) {
                         Block.dropResources(state, level(), pos, level().getBlockEntity(pos), player, ItemStack.EMPTY);

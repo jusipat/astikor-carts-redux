@@ -1,11 +1,13 @@
 package com.jusipat.astikorcartsredux.item;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
+import com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers;
 import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -83,6 +85,7 @@ public class CartItem extends Item {
                     if (!level.isClientSide()) {
                         level.addFreshEntity(cart);
                         level.playSound(null, cart.getX(), cart.getY(), cart.getZ(), AstikorCartsRedux.PLACE_SOUND, SoundSource.BLOCKS, 0.75F, 0.8F);
+                        ACCriteriaTriggers.PLACE_CART_ITEM.get().trigger((ServerPlayer) player, stack);
                     }
                     if (!player.getAbilities().instabuild) {
                         stack.shrink(1);

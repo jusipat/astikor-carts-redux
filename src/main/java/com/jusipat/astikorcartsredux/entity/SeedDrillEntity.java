@@ -4,11 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.AstikorCartsReduxConfig;
 import com.jusipat.astikorcartsredux.container.SeedDrillMenu;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +26,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+
+import java.util.Optional;
 
 public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
 
@@ -43,23 +48,22 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         this.spacing = 1.3D;
     }
 
-    private void plant() {
-        for (int j = 0; j < SLOT_COUNT; j++) {
+    private void plant(Optional<ServerPlayer> playerOptional) {
+        for (int i = 0; i < 3; i++) {
+            int j = this.level().random.nextInt(SLOT_COUNT);
             final ItemStack stack = this.getStackInSlot(j);
-            double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - 90));
-            double z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() - 90));
-            BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX();
-            z = this.getZ();
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
-
-            x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90));
-            z = this.getZ() + Mth.cos((float) Math.toRadians(this.getYRot() + 90));
-            blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
-            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) break;
+            final float f = i - 1;
+            final double x = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final double z = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() + 90)) * f;
+            final BlockPos blockPos = new BlockPos((int) Math.round(x - 0.5), (int) Math.round(this.getY() - 0.75D), (int) Math.round(z - 0.5));
+            if (tryPlaceCrop(stack, blockPos.above(), level(), j)) {
+                playerOptional.ifPresent(player -> {
+                    player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                    CriteriaTriggers.PLACED_BLOCK.trigger(player, blockPos.above(), stack);
+                    com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers.SEED_DRILL_PLACE.get().trigger(player, stack);
+                });
+                break;
+            }
         }
     }
 
@@ -86,7 +90,7 @@ public class SeedDrillEntity extends AbstractDrawnInventoryEntity {
         }
         if (!this.level().isClientSide) {
             if (this.xo != this.getX() || this.zo != this.getZ()) {
-                this.plant();
+                this.plant(getControllingPlayer().flatMap(pl -> Optional.of((ServerPlayer) pl)));
             }
         }
     }

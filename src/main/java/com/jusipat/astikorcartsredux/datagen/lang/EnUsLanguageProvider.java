@@ -70,7 +70,29 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("item.plow.tooltip2", "It needs the respective tools to work and can be toggled by right-clicking");
         add("item.seed_drill.tooltip1", "This contraption plants seeds on farmland");
         add("item.seed_drill.tooltip2", "It has room for 9 stacks of seeds");
-        add("item.reaper.tooltip1", "This contraption can harvest crops");
+        add("item.reaper.tooltip1", "This contraption can harvest crops when attached to a horse");
         add("item.reaper.tooltip2", "Only works if the player is sitting on it");
+        add("advancements.astikorcartsredux.animal_cart_steer.description", "Steer an animal cart while sitting in it");
+        add("advancements.astikorcartsredux.animal_cart_steer.title", "Holding The Reins");
+        add("advancements.astikorcartsredux.attach_banner.description", "Attach a banner to a supply cart, animal cart or a wagon");
+        add("advancements.astikorcartsredux.attach_banner.title", "That's A Red Flag");
+        add("advancements.astikorcartsredux.hand_cart_one_k.description", "Pull a hand cart 1000 blocks");
+        add("advancements.astikorcartsredux.hand_cart_one_k.title", "Expanded Inventory");
+        add("advancements.astikorcartsredux.place_cart.description", "Build any cart and place it");
+        add("advancements.astikorcartsredux.place_cart.title", "Carting around");
+        add("advancements.astikorcartsredux.plow_create_path.description", "Use a shovel with the plow to create a path");
+        add("advancements.astikorcartsredux.plow_create_path.title", "Road To Nowhere");
+        add("advancements.astikorcartsredux.plow_strip_log.description", "Use a axe with the plow to strip logs");
+        add("advancements.astikorcartsredux.plow_strip_log.title", "May I Axe You A Question?");
+        add("advancements.astikorcartsredux.plow_till_ground.description", "Use a hoe with the plow to till the ground");
+        add("advancements.astikorcartsredux.plow_till_ground.title", "Groundbreaking Innovation");
+        add("advancements.astikorcartsredux.reaper_harvest.description", "Harvest some crops using a reaper");
+        add("advancements.astikorcartsredux.reaper_harvest.title", "The Reaper's Due");
+        add("advancements.astikorcartsredux.seed_drill_plant.description", "Plant crops using the seed drill");
+        add("advancements.astikorcartsredux.seed_drill_plant.title", "Planting With Speed");
+        add("advancements.astikorcartsredux.supply_cart_filled.description", "Pulled a supply cart that has an item in every slot");
+        add("advancements.astikorcartsredux.supply_cart_filled.title", "Filled to the brim");
+        add("advancements.astikorcartsredux.wagon_cart_full.description", "Pull a wagon with four passengers");
+        add("advancements.astikorcartsredux.wagon_cart_full.title", "All aboard!");
     }
 }
