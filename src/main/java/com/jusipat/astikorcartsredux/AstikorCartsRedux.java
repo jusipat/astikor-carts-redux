@@ -361,17 +361,13 @@ public class AstikorCartsRedux {
 
 		registrar.playBidirectional(UpdateDrawnPayload.TYPE, UpdateDrawnPayload.CODEC,
 				(payload, context) -> UpdateDrawnPayload.handle(payload, context.player().level())); // sketchy
-
 		registrar.playToServer(ActionKeyPayload.TYPE, ActionKeyPayload.CODEC,
 				(payload, context) -> ActionKeyPayload.handle(context));
 		registrar.playToServer(OpenSupplyCartPayload.TYPE, OpenSupplyCartPayload.CODEC,
 				(payload, context) -> OpenSupplyCartPayload.handle(context));
 		registrar.playToServer(ToggleSlowPayload.TYPE, ToggleSlowPayload.CODEC,
 				(payload, context) -> ToggleSlowPayload.handle(context.player()));
-
 		registrar.playToServer(RequestCartUpdatePayload.TYPE, RequestCartUpdatePayload.CODEC,
 				RequestCartUpdatePayload::handle);
-		//registrar.playToServer(CoachmanMovePayload.TYPE, CoachmanMovePayload.CODEC,
-		//		CoachmanMovePayload::handle); todo: look into coachman
 	}
 }
