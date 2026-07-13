@@ -5,8 +5,8 @@ import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.item.CartItem;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.registries.DeferredItem;
+import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class DeDeLanguageProvider extends LanguageProvider {
         add(AstikorCartsRedux.WHEEL.get(), "Rad");
         for (String type : AstikorCartsRedux.CART_TYPES) {
             for (WoodType woodType : WoodType.values().toList()) {
-                DeferredItem<CartItem> item = AstikorCartsRedux.CARTS.get(type).get(woodType);
+                RegistryObject<CartItem> item = AstikorCartsRedux.CARTS.get(type).get(woodType);
 
                 String woodName = NAMES.getOrDefault(woodType, (woodType.name()));
                 String typeName = NAMES.getOrDefault(type, (type.replace("_", " ")));

@@ -1,6 +1,7 @@
 package com.jusipat.astikorcartsredux;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+
+import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -10,44 +11,29 @@ public final class AstikorCartsReduxConfig {
         return Holder.COMMON;
     }
 
-    public static ModConfigSpec spec() {
+
+    public static ForgeConfigSpec spec() {
         return Holder.COMMON_SPEC;
-    }
-
-    public static Client getClient() {
-        return Holder.CLIENT;
-    }
-
-    public static ModConfigSpec clientSpec() {
-        return Holder.CLIENT_SPEC;
     }
 
     private static final class Holder {
         private static final Common COMMON;
-
-        private static final ModConfigSpec COMMON_SPEC;
-
-        private static final Client CLIENT;
-        private static final ModConfigSpec CLIENT_SPEC;
-
+        private static final ForgeConfigSpec COMMON_SPEC;
         static {
-            final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
+            final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
             COMMON = specPair.getLeft();
             COMMON_SPEC = specPair.getRight();
-            final Pair<Client, ModConfigSpec> clientSpecPair = new ModConfigSpec.Builder().configure(Client::new);
-            CLIENT = clientSpecPair.getLeft();
-            CLIENT_SPEC = clientSpecPair.getRight();
         }
     }
 
     public static class Client {
-        public final ModConfigSpec.BooleanValue renderSupplies;
-        public final ModConfigSpec.BooleanValue renderSupplyGear;
-        public final ModConfigSpec.BooleanValue renderSupplyFlowers;
-        public final ModConfigSpec.BooleanValue renderSupplyPaintings;
-        public final ModConfigSpec.BooleanValue renderSupplyWheel;
+        public final ForgeConfigSpec.BooleanValue renderSupplies;
+        public final ForgeConfigSpec.BooleanValue renderSupplyGear;
+        public final ForgeConfigSpec.BooleanValue renderSupplyFlowers;
+        public final ForgeConfigSpec.BooleanValue renderSupplyPaintings;
+        public final ForgeConfigSpec.BooleanValue renderSupplyWheel;
 
-        Client(final ModConfigSpec.Builder builder) {
+        Client(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration to disable the rendering of certain supplies in the supply cart");
             this.renderSupplies = builder.comment("Enables/Disables the rendering of all supplies")
                     .define("render_supplies", true);
@@ -67,7 +53,7 @@ public final class AstikorCartsReduxConfig {
         public final CartConfig reaper;
         public final CartConfig seedDrill;
 
-        Common(final ModConfigSpec.Builder builder) {
+        Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles, check log for automatic \"pull_animals\" list.").push("carts");
             this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
             this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
@@ -82,16 +68,16 @@ public final class AstikorCartsReduxConfig {
     }
 
     public static class CartConfig {
-        public final ModConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
-        public final ModConfigSpec.DoubleValue slowSpeed;
-        public final ModConfigSpec.DoubleValue pullSpeed;
-        public final ModConfigSpec.IntValue destroyDamage;
+        public final ForgeConfigSpec.ConfigValue<ArrayList<String>> pullEntities;
+        public final ForgeConfigSpec.DoubleValue slowSpeed;
+        public final ForgeConfigSpec.DoubleValue pullSpeed;
+        public final ForgeConfigSpec.IntValue destroyDamage;
 
-        CartConfig(final ModConfigSpec.Builder builder, final String name, final String description) {
+        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description) {
             this(builder, name, description, new ArrayList<>(), 0);
         }
 
-        CartConfig(final ModConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {
+        CartConfig(final ForgeConfigSpec.Builder builder, final String name, final String description, ArrayList<String> defaultEntityList, double defaultPullSpeed) {
             builder.comment(description).push(name);
             this.pullEntities = builder
                     .comment(

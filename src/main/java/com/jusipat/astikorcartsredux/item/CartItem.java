@@ -26,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 
@@ -41,11 +42,11 @@ public class CartItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add(Component.empty());
-        list.add(Component.translatable("item." + this.cartType + ".tooltip1").withStyle(ChatFormatting.GRAY));
-        list.add(Component.translatable("item." + this.cartType + ".tooltip2").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        tooltipComponents.add(Component.empty());
+        tooltipComponents.add(Component.translatable("item." + this.cartType + ".tooltip1").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("item." + this.cartType + ".tooltip2").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CartItem extends Item {
             }
 
             if (result.getType() == HitResult.Type.BLOCK) {
-                final EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.fromNamespaceAndPath(AstikorCartsRedux.MODID, this.cartType));
+                final EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(AstikorCartsRedux.MODID, this.cartType));
                 final Entity cart = type.create(level);
                 if (cart == null) {
                     return InteractionResultHolder.pass(stack);

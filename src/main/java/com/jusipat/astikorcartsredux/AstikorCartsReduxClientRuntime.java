@@ -1,7 +1,6 @@
 package com.jusipat.astikorcartsredux;
 
-import com.jusipat.astikorcartsredux.network.serverbound.ActionKeyPayload;
-import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowPayload;
+import com.jusipat.astikorcartsredux.network.serverbound.ToggleSlowMessage;
 import com.jusipat.astikorcartsredux.util.NiftyWorld;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -31,7 +30,7 @@ public class AstikorCartsReduxClientRuntime {
     ));
     
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
 
         // handle action key
@@ -41,7 +40,7 @@ public class AstikorCartsReduxClientRuntime {
 
         // handle toggle slow
         var player = mc.player;
-        if (player != null && ToggleSlowPayload.getCart(player).isPresent()) {
+        if (player != null && ToggleSlowMessage.getCart(player).isPresent()) {
             while (TOGGLE_SLOW_MAPPING.get().consumeClick()) {
                 PacketDistributor.sendToServer(new ToggleSlowPayload());
                 KeyMapping.set(TOGGLE_SLOW_MAPPING.get().getDefaultKey(), false);

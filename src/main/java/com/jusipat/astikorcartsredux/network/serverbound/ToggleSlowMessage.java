@@ -4,7 +4,6 @@ import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import com.jusipat.astikorcartsredux.network.Message;
 import com.jusipat.astikorcartsredux.network.ServerMessageContext;
 import com.jusipat.astikorcartsredux.util.NiftyWorld;
-import com.jusipat.astikorcartsredux.world.AstikorWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
