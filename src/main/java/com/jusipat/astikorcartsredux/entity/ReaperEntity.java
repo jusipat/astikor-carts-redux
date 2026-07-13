@@ -4,7 +4,11 @@ import com.jusipat.astikorcartsredux.AstikorCartsRedux;
 import com.jusipat.astikorcartsredux.AstikorCartsReduxConfig;
 import com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReaperEntity extends AbstractDrawnEntity {
 
+    private static final EntityDataAccessor<Boolean> FOLDED = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.BOOLEAN);
+
     public ReaperEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.spacing = 1.3D;
@@ -33,6 +39,13 @@ public class ReaperEntity extends AbstractDrawnEntity {
         super.tick();
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
+
+        boolean folded = !(pulling != null && coachman != null);
+        if (folded != this.entityData.get(FOLDED)) {
+            playSound(SoundEvents.WOODEN_TRAPDOOR_CLOSE);
+        }
+        this.entityData.set(FOLDED, folded);
+
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
             final PostilionEntity postilion = AstikorCartsRedux.POSTILION_ENTITY.get().create(this.level());
             if (postilion != null) {
@@ -44,6 +57,16 @@ public class ReaperEntity extends AbstractDrawnEntity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FOLDED, true);
+    }
+
+    public boolean isFolded() {
+        return this.entityData.get(FOLDED);
     }
 
     public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {

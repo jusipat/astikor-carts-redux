@@ -195,11 +195,11 @@ public abstract class AbstractDrawnEntity extends Entity {
                 if (pulling.getControllingPassenger() instanceof PostilionEntity
                         && this.getControllingPassenger() instanceof ServerPlayer player) {
                     if (this instanceof AnimalCartEntity) {
-                        player.awardStat(AstikorCartsRedux.STEER_ANIMAL_CART_CM, cm);
-                        int allCm = player.getStats().getValue(Stats.CUSTOM.get(AstikorCartsRedux.STEER_ANIMAL_CART_CM));
+                        player.awardStat(AstikorCartsRedux.STEER_ANIMAL_CART_CM.get(), cm);
+                        int allCm = player.getStats().getValue(Stats.CUSTOM.get(AstikorCartsRedux.STEER_ANIMAL_CART_CM.get()));
                         ACCriteriaTriggers.STEER_CART.get().trigger(player, this, allCm);
                     } else if (this instanceof ReaperEntity) {
-                        player.awardStat(AstikorCartsRedux.STEER_REAPER_CM, cm);
+                        player.awardStat(AstikorCartsRedux.STEER_REAPER_CM.get(), cm);
                     }
                 }
                 Optional<Player> playerOptional = getControllingPlayer();
@@ -214,7 +214,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 });
                 for (final Entity passenger : this.getPassengers()) {
                     if (passenger instanceof Player player) {
-                        player.awardStat(AstikorCartsRedux.RIDE_CART_CM, cm);
+                        player.awardStat(AstikorCartsRedux.RIDE_CART_CM.get(), cm);
                     }
                 }
             }

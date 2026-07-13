@@ -83,6 +83,10 @@ public class AstikorCartsRedux {
 	private static final List<Runnable> STAT_SETUP = new ArrayList<>();
 
 	public static final DeferredHolder<ResourceLocation, ResourceLocation> CART_ONE_CM = makeACStat("cart_one_cm");
+	public static final DeferredHolder<ResourceLocation, ResourceLocation> RIDE_CART_CM = makeACStat("ride_cart_cm");
+	public static final DeferredHolder<ResourceLocation, ResourceLocation> STEER_ANIMAL_CART_CM = makeACStat("steer_animal_cart_cm");
+	public static final DeferredHolder<ResourceLocation, ResourceLocation> STEER_REAPER_CM = makeACStat("steer_reaper_cm");
+
 	private static DeferredHolder<ResourceLocation, ResourceLocation> makeACStat(String key) {
 		ResourceLocation resourcelocation = ResourceLocation.fromNamespaceAndPath(AstikorCartsRedux.MODID, key);
 		STAT_SETUP.add(() -> Stats.CUSTOM.get(resourcelocation, StatFormatter.DEFAULT));
@@ -237,20 +241,6 @@ public class AstikorCartsRedux {
 
 	public static final Supplier<MenuType<PlowMenu>> PLOW_MENU_TYPE = MENUS.register("plow", () -> new MenuType<>(PlowMenu::new, FeatureFlags.DEFAULT_FLAGS));
 	public static final Supplier<MenuType<SeedDrillMenu>> SEED_DRILL_MENU_TYPE = MENUS.register("seed_drill", () -> new MenuType<>(SeedDrillMenu::new, FeatureFlags.DEFAULT_FLAGS));
-
-	public static final Map<Supplier<? extends EntityType<?>>, ResourceLocation> CART_PULL_CM =
-			ImmutableMap.of(
-					SUPPLY_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "supply_cart_pull_cm"),
-					HAND_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "hand_cart_pull_cm"),
-					ANIMAL_CART_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "animal_cart_pull_cm"),
-					PLOW_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "plow_pull_cm"),
-					REAPER_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "reaper_pull_cm"),
-					SEED_DRILL_ENTITY, ResourceLocation.fromNamespaceAndPath(MODID, "seed_drill_pull_cm")
-			);
-
-	public static final ResourceLocation RIDE_CART_CM = ResourceLocation.fromNamespaceAndPath(MODID, "ride_cart_cm");
-	public static final ResourceLocation STEER_ANIMAL_CART_CM = ResourceLocation.fromNamespaceAndPath(MODID, "steer_animal_cart_cm");
-	public static final ResourceLocation STEER_REAPER_CM = ResourceLocation.fromNamespaceAndPath(MODID, "steer_reaper_cm");
 
 	public static final TagKey<Block> PLOW_BREAKABLE_HOE = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/hoe"));
 	public static final TagKey<Block> PLOW_BREAKABLE_SHOVEL = TagKey.create(Registries.BLOCK, AstikorCartsRedux.resLoc("plow_breakable/shovel"));
