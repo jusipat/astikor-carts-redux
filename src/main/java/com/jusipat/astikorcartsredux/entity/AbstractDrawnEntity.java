@@ -204,7 +204,7 @@ public abstract class AbstractDrawnEntity extends Entity {
                 }
                 Optional<Player> playerOptional = getControllingPlayer();
                 playerOptional.ifPresent(player -> {
-                    var stat = AstikorCartsRedux.CART_PULL_CM.get(this.getType());
+                    var stat = AstikorCartsRedux.CART_ONE_CM.get();
                     player.awardStat(stat, cm);
                     if (player instanceof ServerPlayer serverPlayer) {
                         int allCm = serverPlayer.getStats().getValue(Stats.CUSTOM.get(stat));
