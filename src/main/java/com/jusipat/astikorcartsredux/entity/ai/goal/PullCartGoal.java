@@ -1,6 +1,6 @@
 package com.jusipat.astikorcartsredux.entity.ai.goal;
 
-import com.jusipat.astikorcartsredux.world.AstikorWorld;
+import com.jusipat.astikorcartsredux.util.NiftyWorld;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -16,6 +16,6 @@ public final class PullCartGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return AstikorWorld.get(this.mob.level()).map(w -> w.isPulling(this.mob)).orElse(false);
+        return NiftyWorld.get(this.mob.level()).isPulling(mob);
     }
 }

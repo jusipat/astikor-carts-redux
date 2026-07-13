@@ -1,12 +1,12 @@
 package com.jusipat.astikorcartsredux.entity;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
-import com.jusipat.astikorcartsredux.config.AstikorCartsConfig;
-import com.jusipat.astikorcartsredux.item.AstikorItems;
+import com.jusipat.astikorcartsredux.AstikorCartsReduxConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.antlr.v4.runtime.misc.NotNull;
 
 public final class AnimalCartEntity extends AbstractDrawnEntity {
     public AnimalCartEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
@@ -22,8 +23,8 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    protected AstikorCartsConfig.CartConfig getConfig() {
-        return AstikorCartsConfig.get().animalCart;
+    protected AstikorCartsReduxConfig.CartConfig getConfig() {
+        return AstikorCartsReduxConfig.get().animalCart;
     }
 
     @Override
@@ -32,7 +33,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         final Entity coachman = this.getControllingPassenger();
         final Entity pulling = this.getPulling();
         if (pulling != null && coachman != null && pulling.getControllingPassenger() == null) {
-            final PostilionEntity postilion = AstikorCartsRedux.EntityTypes.POSTILION.get().create(this.level());
+            final PostilionEntity postilion = AstikorCartsRedux.POSTILION_ENTITY.get().create(this.level());
             if (postilion != null) {
                 postilion.moveTo(pulling.getX(), pulling.getY(), pulling.getZ(), coachman.getYRot(), coachman.getXRot());
                 if (postilion.startRiding(pulling)) {
@@ -45,7 +46,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     }
 
     @Override
-    public InteractionResult interact(final Player player, final InteractionHand hand) {
+    public @NotNull InteractionResult interact(final Player player, final InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
             if (!this.level().isClientSide) {
                 for (final Entity entity : this.getPassengers()) {
@@ -76,7 +77,7 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
     public void push(final Entity entityIn) {
         if (!entityIn.hasPassenger(this)) {
             if (!this.level().isClientSide && this.getPulling() != entityIn && this.getControllingPassenger() == null && this.getPassengers().size() < 2 && !entityIn.isPassenger() && entityIn.getBbWidth() < this.getBbWidth() && entityIn instanceof LivingEntity
-                && !(entityIn instanceof WaterAnimal) && !(entityIn instanceof Player)) {
+                    && !(entityIn instanceof WaterAnimal) && !(entityIn instanceof Player)) {
                 entityIn.startRiding(this);
             } else {
                 super.push(entityIn);
@@ -89,29 +90,27 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
         return this.getPassengers().size() < 2;
     }
 
-    @Override
-    public double getPassengersRidingOffset() {
-        return 11.0D / 16.0D;
+    public float getPassengersRidingOffsetY(EntityDimensions entityDimensions, float f) {
+        return (entityDimensions.height() - 8f / 16f) * f;
     }
 
+    @Override
+    protected @NotNull Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions entityDimensions, float f) {
+        double f1 = -0.1d;
+        if (this.getPassengers().size() > 1) {
+            f1 = this.getPassengers().indexOf(entity) == 0 ? 0.2d : -0.6d;
+            if (entity instanceof Animal) {
+                f1 += 0.2d;
+            }
+        }
+        final Vec3 forward = this.getLookAngle().scale(f1 + Mth.sin((float) Math.toRadians(this.getXRot())) * 0.7D);
+        return new Vec3(forward.x, getPassengersRidingOffsetY(entityDimensions, f) + forward.y, forward.z);
+    }
 
     @Override
-    protected void positionRider(Entity passenger, MoveFunction pCallback) {
+    public void positionRider(final Entity passenger, MoveFunction moveFunction) {
+        super.positionRider(passenger, moveFunction);
         if (this.hasPassenger(passenger)) {
-            double f = -0.1D;
-
-            if (this.getPassengers().size() > 1) {
-                f = this.getPassengers().indexOf(passenger) == 0 ? 0.2D : -0.6D;
-
-                if (passenger instanceof Animal) {
-                    f += 0.2D;
-                }
-            }
-
-            final Vec3 forward = this.getLookAngle();
-            final Vec3 origin = new Vec3(0.0D, this.getPassengersRidingOffset(), 1.0D / 16.0D);
-            final Vec3 pos = origin.add(forward.scale(f + Mth.sin((float) Math.toRadians(this.getXRot())) * 0.7D));
-            passenger.setPos(this.getX() + pos.x, this.getY() + pos.y + passenger.getMyRidingOffset(), this.getZ() + pos.z);
             passenger.setYBodyRot(this.getYRot());
             final float f2 = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
             final float f1 = Mth.clamp(f2, -105.0F, 105.0F);
@@ -128,6 +127,9 @@ public final class AnimalCartEntity extends AbstractDrawnEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorItems.ANIMAL_CART.get(this.getWoodType()).asItem();
+        return AstikorCartsRedux.CARTS
+                .get("animal_cart")
+                .get(getWoodType())
+                .asItem();
     }
 }

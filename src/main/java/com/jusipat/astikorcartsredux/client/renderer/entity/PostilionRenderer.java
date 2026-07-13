@@ -1,8 +1,8 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
+import com.jusipat.astikorcartsredux.entity.PostilionEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.jusipat.astikorcartsredux.entity.PostilionEntity;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -13,7 +13,8 @@ import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 
-public final class PostilionRenderer extends EntityRenderer<PostilionEntity> {
+public class PostilionRenderer extends EntityRenderer<PostilionEntity> {
+
     public PostilionRenderer(final EntityRendererProvider.Context manager) {
         super(manager);
     }

@@ -1,10 +1,10 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
+import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
-import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -19,7 +19,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -57,8 +56,7 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         super.render(entity, info.getYaw(), delta, stack, source, packedLight);
     }
 
-    protected void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-    }
+    protected abstract void renderContents(final T entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight);
 
     public void setupRotation(final T entity, final float entityYaw, final float delta, final PoseStack stack) {
         stack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw));
@@ -96,21 +94,33 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         stack.popPose();
     }
 
-    private static final Field CHILD_MODELS = ObfuscationReflectionHelper.findField(ModelPart.class, "f_104213_");
+    private static final Field CHILDREN_FIELD;
+
+    static {
+        try {
+            CHILDREN_FIELD = ModelPart.class.getDeclaredField("children");
+            CHILDREN_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @SuppressWarnings("unchecked")
+    private Map<String, ModelPart> getChildren(ModelPart part) {
+        try {
+            return (Map<String, ModelPart>) CHILDREN_FIELD.get(part);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected void attach(final ModelPart bone, final ModelPart attachment, final Consumer<PoseStack> function, final PoseStack stack) {
         stack.pushPose();
         bone.translateAndRotate(stack);
         if (bone == attachment) {
             function.accept(stack);
         } else {
-            final Map<String, ModelPart> childModels;
-            try {
-                childModels = (Map<String, ModelPart>) CHILD_MODELS.get(bone);
-            } catch (final IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            final Map<String, ModelPart> childModels = getChildren(bone);
             for (final ModelPart child : childModels.values()) {
                 this.attach(child, attachment, function, stack);
             }

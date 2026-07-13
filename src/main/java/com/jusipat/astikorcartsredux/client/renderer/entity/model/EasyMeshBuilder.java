@@ -71,8 +71,8 @@ public class EasyMeshBuilder {
 
     public void build(final PartDefinition parent) {
         PartDefinition part = parent.addOrReplaceChild(this.name,
-            this.cubes,
-            PartPose.offsetAndRotation(this.x, this.y, this.z, this.xRot, this.yRot, this.zRot));
+                this.cubes,
+                PartPose.offsetAndRotation(this.x, this.y, this.z, this.xRot, this.yRot, this.zRot));
         for (EasyMeshBuilder child : this.children) {
             child.build(part);
         }

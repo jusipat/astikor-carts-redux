@@ -8,26 +8,20 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 
 public class AssembledTextureFactory {
     private final Object2ObjectMap<ResourceLocation, AssembledTexture> textures = new Object2ObjectOpenHashMap<>();
 
-    public AssembledTextureFactory add(final ResourceLocation texture, final AssembledTexture assembled) {
-        this.textures.put(texture, assembled);
+    public AssembledTextureFactory add(AssembledTexture texture) {
+        this.textures.put(texture.getId(), texture);
         return this;
     }
 
-    public void register(final IEventBus bus) {
-        bus.addListener(this::bake);
-    }
-
-    private void bake(final ModelEvent.BakingCompleted event) {
+    public void bake() {
         final Minecraft mc = Minecraft.getInstance();
         final ResourceManager resources = mc.getResourceManager();
         final TextureManager textures = mc.getTextureManager();
-        final ModelManager sprites = event.getModelManager();
+        final ModelManager sprites = mc.getModelManager();
         Object2ObjectMaps.fastForEach(this.textures, e -> {
             if (resources.getResource(e.getKey()).isPresent()) {
                 textures.release(e.getKey());

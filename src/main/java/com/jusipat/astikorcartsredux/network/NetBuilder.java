@@ -140,14 +140,14 @@ public final class NetBuilder {
             @SuppressWarnings("unchecked")
             final Class<T> type = (Class<T>) factory.get().getClass();
             NetBuilder.this.channel().messageBuilder(type, NetBuilder.this.id++)
-                .encoder(Message::encode)
-                .decoder(buf -> {
-                    final T msg = factory.get();
-                    msg.decode(buf);
-                    return msg;
-                })
-                .consumerNetworkThread(this.consumerFactory.create(consumer))
-                .add();
+                    .encoder(Message::encode)
+                    .decoder(buf -> {
+                        final T msg = factory.get();
+                        msg.decode(buf);
+                        return msg;
+                    })
+                    .consumerNetworkThread(this.consumerFactory.create(consumer))
+                    .add();
             return NetBuilder.this;
         }
     }

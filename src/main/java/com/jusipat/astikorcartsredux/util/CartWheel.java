@@ -33,6 +33,7 @@ public final class CartWheel {
         this(cartIn, offsetX, 0.0F, (float) (10 * Math.PI * 2 / 16));
     }
 
+    @SuppressWarnings("resource")
     public void tick() {
         this.rotation += this.rotationIncrement;
         this.prevPosX = this.posX;
@@ -51,11 +52,11 @@ public final class CartWheel {
         if (distanceTravelled > 0.2) {
             final BlockPos blockpos = new BlockPos(Mth.floor(this.posX), Mth.floor(this.cart.getY() - 0.2F), Mth.floor(this.posZ));
             final BlockState blockstate = this.cart.level().getBlockState(blockpos);
-            if (!blockstate.addRunningEffects(this.cart.level(), blockpos, this.cart)) {
+            //if (!blockstate.addRunningEffects(this.cart.level(), blockpos, this.cart)) {
                 if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-                    this.cart.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos), this.posX, this.cart.getY(), this.posZ, dx, distanceTravelled, dz);
+                    this.cart.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), this.posX, this.cart.getY(), this.posZ, dx, distanceTravelled, dz);
                 }
-            }
+            //}
         }
         this.rotationIncrement = travelledForward * distanceTravelled * this.circumference * 0.2F;
     }

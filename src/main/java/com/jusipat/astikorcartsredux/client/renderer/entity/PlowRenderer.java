@@ -1,11 +1,11 @@
 package com.jusipat.astikorcartsredux.client.renderer.entity;
 
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import com.jusipat.astikorcartsredux.client.renderer.AstikorCartsModelLayers;
 import com.jusipat.astikorcartsredux.client.renderer.entity.model.PlowModel;
 import com.jusipat.astikorcartsredux.entity.PlowEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.jusipat.astikorcartsredux.client.renderer.AstikorCartsReduxModelLayers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,24 +14,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-
+import org.antlr.v4.runtime.misc.NotNull;
 
 public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
 
     public PlowRenderer(final EntityRendererProvider.Context renderManager) {
-        super(renderManager, new PlowModel(renderManager.bakeLayer(AstikorCartsModelLayers.PLOW)));
+        super(renderManager, new PlowModel(renderManager.bakeLayer(AstikorCartsReduxModelLayers.PLOW)));
         this.shadowRadius = 1.0F;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(final PlowEntity entity) {
-        return new ResourceLocation(AstikorCartsRedux.ID, "textures/entity/" + entity.getWoodType() + "_plow.png");
+    public @NotNull ResourceLocation getTextureLocation(final PlowEntity entity) {
+        return new ResourceLocation(AstikorCartsRedux.MODID, "textures/entity/" + entity.getWoodType().name() + "_plow.png");
     }
 
     @Override
     protected void renderContents(final PlowEntity entity, final float delta, final PoseStack stack, final MultiBufferSource source, final int packedLight) {
-        super.renderContents(entity, delta, stack, source, packedLight);
-        for (int i = 0; i < entity.inventory.getSlots(); i++) {
+        for (int i = 0; i < entity.getItemStacks().size(); i++) {
             final ItemStack itemStack = entity.getStackInSlot(i);
             if (itemStack.isEmpty()) {
                 continue;

@@ -1,25 +1,15 @@
 package com.jusipat.astikorcartsredux.entity;
 
-import com.jusipat.astikorcartsredux.world.AstikorWorld;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import com.jusipat.astikorcartsredux.util.NiftyWorld;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
-
-public final class PostilionEntity extends DummyLivingEntity {
-    public PostilionEntity(final EntityType<? extends PostilionEntity> type, final Level world) {
+public class PostilionEntity extends DummyLivingEntity {
+    public PostilionEntity(EntityType<? extends LivingEntity> type, Level world) {
         super(type, world);
-    }
-
-    @Override
-    public double getMyRidingOffset() {
-        return 0.125D;
     }
 
     @Override
@@ -43,14 +33,10 @@ public final class PostilionEntity extends DummyLivingEntity {
     private LivingEntity getCoachman() {
         final Entity mount = this.getVehicle();
         if (mount != null) {
-            return AstikorWorld.get(this.level()).map(m -> m.getDrawn(mount)).orElse(Optional.empty())
-                .map(AbstractDrawnEntity::getControllingPassenger).orElse(null);
+            return NiftyWorld.get(this.level()).getDrawn(mount)
+                    .map(AbstractDrawnEntity::getControllingPassenger).orElse(null);
         }
         return null;
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 }

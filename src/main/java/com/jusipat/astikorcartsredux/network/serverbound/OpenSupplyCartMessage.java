@@ -2,7 +2,6 @@ package com.jusipat.astikorcartsredux.network.serverbound;
 
 import com.jusipat.astikorcartsredux.entity.SupplyCartEntity;
 import com.jusipat.astikorcartsredux.network.Message;
-import com.jusipat.astikorcartsredux.network.ServerMessageContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

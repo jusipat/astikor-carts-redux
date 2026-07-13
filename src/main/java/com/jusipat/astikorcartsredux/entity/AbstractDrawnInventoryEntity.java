@@ -1,89 +1,188 @@
 package com.jusipat.astikorcartsredux.entity;
 
-import net.minecraft.core.Direction;
+import com.jusipat.astikorcartsredux.util.NCInventory;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootTable;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity {
-    private static final Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-    public ItemStackHandler inventory = this.initInventory();
-    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
+public abstract class AbstractDrawnInventoryEntity extends AbstractDrawnEntity implements HasCustomInventoryScreen, ContainerEntity {
 
-    public AbstractDrawnInventoryEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
+    private NCInventory itemStacks;
+    private final int containerSize;
+    @Nullable
+    private ResourceKey<LootTable> lootTable;
+    private long lootTableSeed;
+
+    public AbstractDrawnInventoryEntity(EntityType<? extends Entity> entityTypeIn, Level worldIn, int containerSize) {
         super(entityTypeIn, worldIn);
+        this.itemStacks = NCInventory.withSize(containerSize, ItemStack.EMPTY);
+        this.containerSize = containerSize;
+        this.itemStacks.setOnContentsChanged(this::onContentsChanged);
     }
 
-    protected abstract ItemStackHandler initInventory();
+    protected float getFillLevel() {
+        float slots = getItemStacks().stream().filter(s -> !s.isEmpty()).count();
+        return slots / containerSize;
+    }
+
+    public boolean stillValid(Player player) {
+        return this.isChestVehicleStillValid(player);
+    }
 
     @Override
-    public SlotAccess getSlot(final int slot) {
-        ItemStackHandler inventory = this.inventory;
-        if (slot >= 0 && slot < inventory.getSlots()) {
-            return new SlotAccess() {
-                @Override
-                public ItemStack get() {
-                    return inventory.getStackInSlot(slot);
-                }
+    public void onDestroyedAndDoDrops(DamageSource source) {
+        this.chestVehicleDestroyed(source, this.level(), this);
+    }
 
-                @Override
-                public boolean set(final ItemStack stack) {
-                    inventory.setStackInSlot(slot, stack);
-                    return true;
-                }
-            };
+    public void remove(Entity.RemovalReason removalReason) {
+        if (!this.level().isClientSide && removalReason.shouldDestroy()) {
+            Containers.dropContents(this.level(), this, this);
         }
-        return super.getSlot(slot);
+        super.remove(removalReason);
+    }
+
+    protected abstract InteractionResult onInteractNotOpen(Player player, InteractionHand hand);
+
+    protected boolean canInteractNotOpen() {
+        return true;
     }
 
     @Override
-    public void onDestroyedAndDoDrops(final DamageSource source) {
-        for (int i = 0; i < this.inventory.getSlots(); i++) {
-            ItemEntity itementity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.inventory.getStackInSlot(i));
-            itementity.setDefaultPickUpDelay();
-            this.level().addFreshEntity(itementity);
+    public @NotNull InteractionResult interact(Player player, InteractionHand interactionHand) {
+        if (canInteractNotOpen() && this.canAddPassenger(player) && !player.isSecondaryUseActive()) {
+            return onInteractNotOpen(player, interactionHand);
+        } else {
+            InteractionResult interactionResult = this.interactWithContainerVehicle(player);
+            if (interactionResult.consumesAction()) {
+                this.gameEvent(GameEvent.CONTAINER_OPEN, player);
+                PiglinAi.angerNearbyPiglins(player, true);
+            }
+
+            return interactionResult;
         }
     }
 
+    public void openCustomInventoryScreen(Player player) {
+        player.openMenu(this);
+        if (!player.level().isClientSide) {
+            this.gameEvent(GameEvent.CONTAINER_OPEN, player);
+            PiglinAi.angerNearbyPiglins(player, true);
+        }
+    }
+
+    public void clearContent() {
+        this.clearChestVehicleContent();
+    }
+
+    public int getContainerSize() {
+        return containerSize;
+    }
+
+    public @NotNull ItemStack getItem(int i) {
+        return this.getChestVehicleItem(i);
+    }
+
+    public @NotNull ItemStack removeItem(int i, int j) {
+        return this.removeChestVehicleItem(i, j);
+    }
+
+    public @NotNull ItemStack removeItemNoUpdate(int i) {
+        return this.removeChestVehicleItemNoUpdate(i);
+    }
+
+    public void setItem(int i, ItemStack itemStack) {
+        this.setChestVehicleItem(i, itemStack);
+    }
+
+    public @NotNull SlotAccess getSlot(int i) {
+        return this.getChestVehicleSlot(i);
+    }
+
+    public void setChanged() {
+    }
+
+    @Nullable
     @Override
-    protected void readAdditionalSaveData(final CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
+    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        if (this.lootTable != null && player.isSpectator()) {
+            return null;
+        } else {
+            this.unpackLootTable(inventory.player);
+            return createMenuLootUnpacked(i, inventory, player);
+        }
+    }
+
+    protected abstract AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player);
+
+    public @NotNull NonNullList<ItemStack> getItemStacks() {
+        return this.itemStacks;
+    }
+
+    public void clearItemStacks() {
+        this.itemStacks = NCInventory.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        this.itemStacks.setOnContentsChanged(this::onContentsChanged);
+    }
+
+    public void stopOpen(Player player) {
+        this.level().gameEvent(GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.Context.of(player));
+    }
+
+    protected void onContentsChanged(int slot) {}
+
+    public void unpackLootTable(@Nullable Player player) {
+        this.unpackChestVehicleLootTable(player);
+    }
+
+    public @Nullable ResourceKey<LootTable> getLootTable() {
+        return this.lootTable;
+    }
+
+    public void setLootTable(@Nullable ResourceKey<LootTable> resourceLocation) {
+        this.lootTable = resourceLocation;
+    }
+
+    public long getLootTableSeed() {
+        return this.lootTableSeed;
+    }
+
+    public void setLootTableSeed(long l) {
+        this.lootTableSeed = l;
     }
 
     @Override
-    protected void addAdditionalSaveData(final CompoundTag compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.put("Items", this.inventory.serializeNBT());
+        saveInventory(compound);
     }
 
-
-    @Override
-    public void remove(final RemovalReason reason) {
-        super.remove(reason);
-        if (this.itemHandler != null) {
-            this.itemHandler.invalidate();
-            this.itemHandler = null;
-        }
-    }
+    protected abstract void saveInventory(CompoundTag tag);
 
     @Override
-    public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction facing) {
-        if (this.isAlive() && capability == ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
-            return this.itemHandler.cast();
-        return super.getCapability(capability, facing);
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        readInventory(compound);
     }
+
+    protected abstract void readInventory(CompoundTag tag);
+
 }

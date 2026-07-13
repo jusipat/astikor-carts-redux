@@ -2,10 +2,9 @@ package com.jusipat.astikorcartsredux.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.jusipat.astikorcartsredux.AstikorCartsRedux;
-import com.jusipat.astikorcartsredux.config.AstikorCartsConfig;
-import com.jusipat.astikorcartsredux.inventory.container.PlowContainer;
-import com.jusipat.astikorcartsredux.item.AstikorItems;
-import com.jusipat.astikorcartsredux.util.CartItemStackHandler;
+import com.jusipat.astikorcartsredux.AstikorCartsReduxConfig;
+import com.jusipat.astikorcartsredux.advancement.ACCriteriaTriggers;
+import com.jusipat.astikorcartsredux.container.PlowMenu;
 import com.jusipat.astikorcartsredux.util.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,20 +16,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.NetworkHooks;
 
 public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private static final int SLOT_COUNT = 3;
@@ -42,30 +41,13 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK));
 
     public PlowEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
-        super(entityTypeIn, worldIn);
+        super(entityTypeIn, worldIn, SLOT_COUNT);
         this.spacing = 1.3D;
     }
 
     @Override
-    protected AstikorCartsConfig.CartConfig getConfig() {
-        return AstikorCartsConfig.get().plow;
-    }
-
-    @Override
-    protected ItemStackHandler initInventory() {
-        return new CartItemStackHandler<>(SLOT_COUNT, this) {
-            @Override
-            protected void onLoad() {
-                for (int i = 0; i < TOOLS.size(); i++) {
-                    this.cart.getEntityData().set(TOOLS.get(i), this.getStackInSlot(i));
-                }
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                this.cart.updateSlot(slot);
-            }
-        };
+    protected AstikorCartsReduxConfig.CartConfig getConfig() {
+        return AstikorCartsReduxConfig.get().plow;
     }
 
     public boolean getPlowing() {
@@ -79,11 +61,11 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
             return;
         }
         if (!this.level().isClientSide) {
-            Player player = null;
+            ServerPlayer player = null;
             if (this.getPulling() instanceof Player pl) {
-                player = pl;
+                player = (ServerPlayer) pl;
             } else if (this.getPulling().getControllingPassenger() instanceof Player pl) {
-                player = pl;
+                player = (ServerPlayer) pl;
             }
             if (this.entityData.get(PLOWING) && player != null) {
                 if (this.xo != this.getX() || this.zo != this.getZ()) {
@@ -93,7 +75,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         }
     }
 
-    private void plow(final Player player) {
+    private void plow(final ServerPlayer player) {
         for (int i = 0; i < SLOT_COUNT; i++) {
             final ItemStack stack = this.getStackInSlot(i);
             if (stack.getItem() instanceof TieredItem) {
@@ -104,7 +86,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
                 final boolean damageable = stack.isDamageableItem();
                 final int count = stack.getCount();
                 tryBreakBlock(stack, blockPos.above(), level(), player);
-                stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                InteractionResult result = stack.getItem().useOn(new ProxyItemUseContext(player, stack, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                if (result.consumesAction()) ACCriteriaTriggers.USE_PLOW.get().trigger(player, stack);
                 if (damageable && stack.getCount() < count) {
                     this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
                     this.updateSlot(i);
@@ -135,23 +118,21 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    public InteractionResult interact(final Player player, final InteractionHand hand) {
-        if (player.isSecondaryUseActive()) {
-            this.openContainer(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
-        }
-        if (!this.level().isClientSide) {
-            this.entityData.set(PLOWING, !this.entityData.get(PLOWING));
-        }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+    protected AbstractContainerMenu createMenuLootUnpacked(int i, Inventory inventory, Player player) {
+        return new PlowMenu(i, inventory, this);
+    }
+
+    @Override
+    protected void onContentsChanged(int slot) {
+        updateSlot(slot);
     }
 
     public void updateSlot(final int slot) {
         if (!this.level().isClientSide) {
-            if (this.inventory.getStackInSlot(slot).isEmpty()) {
+            if (this.getItemStacks().get(slot).isEmpty()) {
                 this.entityData.set(TOOLS.get(slot), ItemStack.EMPTY);
             } else {
-                this.entityData.set(TOOLS.get(slot), this.inventory.getStackInSlot(slot));
+                this.entityData.set(TOOLS.get(slot), this.getItemStacks().get(slot));
             }
 
         }
@@ -163,22 +144,37 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return AstikorItems.PLOW.get(this.getWoodType()).asItem();
+        return AstikorCartsRedux.CARTS
+                .get("plow")
+                .get(getWoodType())
+                .asItem();
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(PLOWING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PLOWING, false);
         for (final EntityDataAccessor<ItemStack> param : TOOLS) {
-            this.entityData.define(param, ItemStack.EMPTY);
+            builder.define(param, ItemStack.EMPTY);
         }
     }
 
     @Override
-    protected void readAdditionalSaveData(final CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(PLOWING, compound.getBoolean("Plowing"));
+    protected InteractionResult onInteractNotOpen(Player player, InteractionHand hand) {
+        if (!this.level().isClientSide) {
+            this.entityData.set(PLOWING, !this.entityData.get(PLOWING));
+        }
+        return InteractionResult.sidedSuccess(this.level().isClientSide);
+    }
+
+    @Override
+    protected void saveInventory(CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItemStacks(), this.registryAccess());
+    }
+
+    @Override
+    protected void readInventory(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag, this.getItemStacks(), this.registryAccess());
     }
 
     @Override
@@ -187,12 +183,10 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         compound.putBoolean("Plowing", this.entityData.get(PLOWING));
     }
 
-    private void openContainer(final Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            NetworkHooks.openScreen(serverPlayer,
-                    new SimpleMenuProvider((windowId, playerInventory, p) -> new PlowContainer(windowId, playerInventory, this), this.getDisplayName()),
-                    buf -> buf.writeInt(this.getId())
-            );
-        }
+    @Override
+    protected void readAdditionalSaveData(final CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.entityData.set(PLOWING, compound.getBoolean("Plowing"));
     }
+
 }

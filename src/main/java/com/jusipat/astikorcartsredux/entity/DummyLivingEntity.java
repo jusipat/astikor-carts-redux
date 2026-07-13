@@ -1,25 +1,21 @@
 package com.jusipat.astikorcartsredux.entity;
 
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 
-public abstract class DummyLivingEntity extends LivingEntity {
+public class DummyLivingEntity extends LivingEntity {
+
     protected DummyLivingEntity(final EntityType<? extends LivingEntity> type, final Level world) {
         super(type, world);
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
         this.setSilent(true);
         this.setNoGravity(true);
         this.setInvulnerable(true);
@@ -27,13 +23,18 @@ public abstract class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+    }
+
+    @Override
+    public @NotNull Iterable<ItemStack> getArmorSlots() {
         return Collections.emptyList();
 
     }
 
     @Override
-    public ItemStack getItemBySlot(final EquipmentSlot slotIn) {
+    public @NotNull ItemStack getItemBySlot(final EquipmentSlot slotIn) {
         return ItemStack.EMPTY;
     }
 
@@ -42,24 +43,24 @@ public abstract class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public HumanoidArm getMainArm() {
+    public @NotNull HumanoidArm getMainArm() {
         return HumanoidArm.RIGHT;
     }
 
     @Override
-    public boolean ignoreExplosion() {
+    public boolean ignoreExplosion(Explosion explosion) {
         return true;
     }
 
     @Override
-    public PushReaction getPistonPushReaction() {
+    public @NotNull PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
-    @Override
+    /*@Override
     public boolean canBreatheUnderwater() {
         return true;
-    }
+    }*/
 
     @Override
     public boolean isEffectiveAi() {
@@ -67,13 +68,13 @@ public abstract class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPushable() {
         return false;
     }
 
     @Override
-    public boolean isPushable() {
-        return false;
+    public void rideTick() {
+        super.rideTick();
     }
 
     @Override
@@ -97,7 +98,7 @@ public abstract class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean canChangeDimensions() {
+    public boolean canChangeDimensions(Level level, Level level2) {
         return false;
     }
 
@@ -134,7 +135,7 @@ public abstract class DummyLivingEntity extends LivingEntity {
     }
 
     @Override
-    public boolean addEffect(final MobEffectInstance effect, Entity entity) {
+    public boolean addEffect(final MobEffectInstance effect, @Nullable Entity entity) {
         return false;
     }
 

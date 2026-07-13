@@ -3,6 +3,7 @@ package com.jusipat.astikorcartsredux.network.serverbound;
 import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
 import com.jusipat.astikorcartsredux.network.Message;
 import com.jusipat.astikorcartsredux.network.ServerMessageContext;
+import com.jusipat.astikorcartsredux.util.NiftyWorld;
 import com.jusipat.astikorcartsredux.world.AstikorWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +28,6 @@ public final class ToggleSlowMessage implements Message {
         final Entity ridden = player.getVehicle();
         if (ridden == null) return Optional.empty();
         if (ridden instanceof AbstractDrawnEntity) return Optional.of((AbstractDrawnEntity) ridden);
-        return AstikorWorld.get(ridden.level()).resolve().flatMap(w -> w.getDrawn(ridden));
+        return NiftyWorld.get(ridden.level()).resolve().flatMap(w -> w.getDrawn(ridden));
     }
 }

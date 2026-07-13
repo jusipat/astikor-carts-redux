@@ -24,4 +24,5 @@ run-server
 logs
 
 # Files from Forge MDK
+src/generated/
 forge*changelog.txt

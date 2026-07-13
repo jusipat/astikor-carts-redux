@@ -6,30 +6,13 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.animal.horse.SkeletonHorse;
-import net.minecraft.world.entity.animal.horse.SkeletonTrapGoal;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-/**
- * <p>The traditional usage of {@link EntityJoinLevelEvent} to add custom AI appends goals to the end of
- * the {@link GoalSelector}'s goal set, for example:
- * <pre> {@code
- *    mob.goalSelector.addGoal(1, new CustomGoal(mob))
- * } </pre>
- * <p>However, by this point an entity would have already had a chance to add toggleable goals to its
- * selectors from construction and deserialization, which may be expected to be the final goals.
- * <p>This is notably an issue with {@link SkeletonHorse}, as it uses a goal
- * {@link SkeletonTrapGoal} which depends on being the last goal and when otherwise causes a
- * {@link ConcurrentModificationException} during {@link Entity#tick}.
- * <p>This class addresses the problem be adding custom goals to the beginning of the goal set.
- */
+@SuppressWarnings("resource")
 public final class GoalAdder<T extends Entity> {
     private final Class<T> type;
 
@@ -43,12 +26,7 @@ public final class GoalAdder<T extends Entity> {
         this.goals = builder.goals.build();
     }
 
-    public void register(final IEventBus bus) {
-        bus.addListener(this::onEntityJoinWorld);
-    }
-
-    private void onEntityJoinWorld(final EntityJoinLevelEvent event) {
-        final Entity entity = event.getEntity();
+    public void onEntityJoinWorld(final Entity entity) {
         if (!entity.level().isClientSide && this.type.isInstance(entity)) {
             final Set<WrappedGoal> oldGoals = this.getGoals(this.type.cast(entity));
             final List<WrappedGoal> newGoals = new ArrayList<>(oldGoals.size() + this.goals.size());
@@ -99,14 +77,5 @@ public final class GoalAdder<T extends Entity> {
         }
     }
 
-    private static final class GoalEntry<T extends Entity> {
-        private final int priority;
-
-        private final Function<T, Goal> factory;
-
-        private GoalEntry(final int priority, final Function<T, Goal> factory) {
-            this.priority = priority;
-            this.factory = factory;
-        }
-    }
+    private record GoalEntry<T extends Entity>(int priority, Function<T, Goal> factory) {}
 }
