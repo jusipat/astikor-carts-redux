@@ -276,8 +276,15 @@ public class AstikorCartsRedux {
 		modEventBus.addListener(this::addCreative);
 
 		// Config
-		ModLoadingContext.get()
-				.registerConfig(ModConfig.Type.COMMON, AstikorCartsReduxConfig.spec());
+		ModLoadingContext.get().registerConfig(
+				ModConfig.Type.CLIENT,
+				AstikorCartsReduxConfig.clientSpec()
+		);
+
+		ModLoadingContext.get().registerConfig(
+				ModConfig.Type.COMMON,
+				AstikorCartsReduxConfig.spec()
+		);
 	}
 
 	public static <T extends Entity> Supplier<EntityType<T>> register(String id, Supplier<EntityType<T>> supplier) {

@@ -11,10 +11,21 @@ import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 enum Contents {
-    FLOWERS(s -> s.getItem() instanceof BlockItem && s.is(ItemTags.FLOWERS) && AstikorCartsReduxConfig.getClient().renderSupplyFlowers.get(), ICargoCartRenderer::renderFlowers),
-    PAINTINGS(s -> s.getItem() == Items.PAINTING && AstikorCartsReduxConfig.getClient().renderSupplyPaintings.get(), ICargoCartRenderer::renderPaintings),
-    WHEEL(s -> s.getItem() == AstikorCartsRedux.WHEEL.get() && AstikorCartsReduxConfig.getClient().renderSupplyWheel.get(), ICargoCartRenderer::renderWheel),
-    SUPPLIES(s -> AstikorCartsReduxConfig.getClient().renderSupplies.get(), ICargoCartRenderer::renderSupplies),
+    FLOWERS(s -> s.getItem() instanceof BlockItem
+            && s.is(ItemTags.FLOWERS)
+            && AstikorCartsReduxConfig.getClient().renderSupplyFlowers.get(),
+            ICargoCartRenderer::renderFlowers),
+
+    PAINTINGS(s -> s.getItem() == Items.PAINTING
+            && AstikorCartsReduxConfig.getClient().renderSupplyPaintings.get(),
+            ICargoCartRenderer::renderPaintings),
+
+    WHEEL(s -> s.getItem() == AstikorCartsRedux.WHEEL.get()
+            && AstikorCartsReduxConfig.getClient().renderSupplyWheel.get(),
+            ICargoCartRenderer::renderWheel),
+
+    SUPPLIES(s -> AstikorCartsReduxConfig.getClient().renderSupplies.get(),
+            ICargoCartRenderer::renderSupplies),
     NONE(s -> true, null);
 
     private final Predicate<? super ItemStack> predicate;
