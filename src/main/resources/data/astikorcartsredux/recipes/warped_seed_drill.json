@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "h": {
+      "item": "minecraft:hopper"
+    },
+    "p": {
+      "item": "minecraft:warped_planks"
+    },
+    "w": {
+      "item": "astikorcartsredux:wheel"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "php",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "astikorcartsredux:warped_seed_drill"
+  }
+}

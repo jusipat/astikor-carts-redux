@@ -1,0 +1,17 @@
+{
+    "item.astikorcartsredux.supply_cart": "貨物用人力車",
+    "item.astikorcartsredux.plow": "耕作用人力車",
+    "item.astikorcartsredux.animal_cart": "家畜用人力車",
+    "item.astikorcartsredux.wheel": "車輪",
+    "itemGroup.astikorcartsredux": "人力車",
+    "entity.astikorcartsredux.supply_cart": "貨物用人力車",
+    "entity.astikorcartsredux.plow": "耕作用人力車",
+    "entity.astikorcartsredux.animal_cart": "家畜用人力車",
+    "entity.astikorcartsredux.postilion": "騎手",
+    "key.categories.astikorcartsredux": "人力車",
+    "key.astikorcartsredux.desc": "人力車を持つ/おろす",
+    "subtitles.astikorcartsredux.cart.attached": "人力車を持つ",
+    "subtitles.astikorcartsredux.cart.detached": "人力車をおろす",
+    "subtitles.astikorcartsredux.cart.placed": "人力車を設置する",
+    "stat.astikorcartsredux.cart_one_cm": "人力車を引いた距離"
+}

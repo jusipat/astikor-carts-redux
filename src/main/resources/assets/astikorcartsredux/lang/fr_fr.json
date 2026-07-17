@@ -1,0 +1,12 @@
+{
+  "item.astikorcartsredux.supply_cart": "Chariot",
+  "item.astikorcartsredux.plow": "Charrue",
+  "item.astikorcartsredux.animal_cart": "Chariot de Transportation",
+  "item.astikorcartsredux.wheel": "Roue",
+  "itemGroup.astikorcartsredux": "AstikorCarts",
+  "entity.astikorcartsredux.supply_cart": "Chariot",
+  "entity.astikorcartsredux.plow": "Charrue",
+  "entity.astikorcartsredux.animal_cart": "Chariot de Transportation",
+  "key.categories.astikorcartsredux": "AstikorCarts",
+  "key.astikorcartsredux.desc": "Bouton d'Action"
+}

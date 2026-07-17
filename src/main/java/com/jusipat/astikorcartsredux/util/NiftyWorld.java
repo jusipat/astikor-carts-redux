@@ -1,0 +1,117 @@
+package com.jusipat.astikorcartsredux.util;
+
+import com.sun.jna.platform.win32.COM.util.Factory;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import com.jusipat.astikorcartsredux.AstikorCartsRedux;
+import com.jusipat.astikorcartsredux.entity.AbstractDrawnEntity;
+import net.minecraft.nbt.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import org.antlr.v4.runtime.misc.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.*;
+
+public class NiftyWorld extends SavedData {
+
+    private static NiftyWorld clientInstance = null;
+
+    private final Int2ObjectMap<AbstractDrawnEntity> pulling = new Int2ObjectOpenHashMap<>();
+
+    public void addPulling(final AbstractDrawnEntity drawn) {
+        @Nullable final Entity pulling = drawn.getPulling();
+        if (pulling != null) {
+            this.pulling.put(pulling.getId(), drawn);
+            setDirty();
+        }
+    }
+
+    public void setPulling(int pullId, final AbstractDrawnEntity drawn) {
+        this.pulling.put(pullId, drawn);
+        setDirty();
+    }
+
+    public Optional<AbstractDrawnEntity> getDrawn(final Entity e) {
+        if (e == null) return Optional.empty();
+        return Optional.ofNullable(this.pulling.get(e.getId()));
+    }
+
+    public boolean isPulling(final Entity e) {
+        return this.pulling.containsKey(e.getId());
+    }
+
+    public void tick() {
+        final Iterator<Integer> it = this.pulling.keySet().iterator();
+        while (it.hasNext()) {
+            final int pullId = it.next();
+            final AbstractDrawnEntity cart = this.pulling.get(pullId);
+            if (cart.shouldStopPulledTick()) {
+                it.remove();
+                setDirty();
+            } else {
+                if (!(cart.getPulling() instanceof AbstractDrawnEntity)) {
+                    cart.pulledTick();
+                }
+            }
+        }
+    }
+
+    public Optional<Entity> getCurrentlyPulling(AbstractDrawnEntity drawn) {
+        OptionalInt id = pulling.keySet().intStream()
+                .filter(pullID -> pulling.get(pullID) == drawn)
+                .findFirst();
+        if (id.isEmpty()) return Optional.empty();
+        return Optional.ofNullable(drawn.level().getEntity(id.getAsInt()));
+    }
+
+    public Int2ObjectMap<AbstractDrawnEntity> getPulling() {
+        return pulling;
+    }
+
+    @Override
+    public @NotNull CompoundTag save(CompoundTag tag) {
+        ListTag drawnList = new ListTag();
+        for (AbstractDrawnEntity drawn : pulling.values()) {
+            drawnList.add(NbtUtils.createUUID(drawn.getUUID()));
+        }
+        tag.put("drawnList", drawnList);
+        return tag;
+    }
+
+    public static NiftyWorld createFromNbt(CompoundTag tag, ServerLevel level) {
+        NiftyWorld data = new NiftyWorld();
+        ListTag drawnList = tag.getList("drawnList", Tag.TAG_INT_ARRAY);
+        for (Tag item : drawnList) {
+            UUID uuid = NbtUtils.loadUUID(item);
+            if (level.getEntity(uuid) instanceof AbstractDrawnEntity drawn) {
+                data.addPulling(drawn);
+            }
+        }
+        return data;
+    }
+
+    public static NiftyWorld get(Level level) {
+        if (level.isClientSide()) {
+            return getClient();
+        } else {
+            return getServer(AstikorCartsRedux.server, level.dimension());
+        }
+    }
+
+    public static NiftyWorld getClient() {
+        if (clientInstance == null) {
+            clientInstance = new NiftyWorld();
+        }
+        return clientInstance;
+    }
+
+    public static NiftyWorld getServer(MinecraftServer server, ResourceKey<Level> levelType) {
+        var dataStorage = Objects.requireNonNull(server.getLevel(levelType)).getDataStorage();
+        return dataStorage.computeIfAbsent((tag) -> NiftyWorld.createFromNbt(tag, server.getLevel(levelType)), NiftyWorld::new, AstikorCartsRedux.MODID);
+    }
+}

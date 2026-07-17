@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "item": "minecraft:crimson_planks"
+    },
+    "w": {
+      "item": "astikorcartsredux:wheel"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "wpw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "astikorcartsredux:crimson_hand_cart"
+  }
+}

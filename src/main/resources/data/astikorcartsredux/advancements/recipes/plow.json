@@ -1,0 +1,31 @@
+{
+  "rewards": {
+    "recipes": [
+      "astikorcartsredux:plow"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "astikorcartsredux:plow"
+      }
+    },
+    "has_wheel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "astikorcartsredux:wheel"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wheel"
+    ]
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "entity.cart.attach": {
+    "sounds": [
+      "astikorcartsredux:entity/cart/attach"
+    ],
+    "subtitle": "subtitles.astikorcartsredux.cart.attached"
+  },
+  "entity.cart.detach": {
+    "sounds": [
+      "astikorcartsredux:entity/cart/detach"
+    ],
+    "subtitle": "subtitles.astikorcartsredux.cart.detached"
+  },
+  "entity.cart.place": {
+    "sounds": [
+      "astikorcartsredux:entity/cart/place"
+    ],
+    "subtitle": "subtitles.astikorcartsredux.cart.placed"
+  },
+  "entity.cart.creak": {
+    "sounds": [
+      "astikorcartsredux:entity/cart/creak0",
+      "astikorcartsredux:entity/cart/creak1",
+      "astikorcartsredux:entity/cart/creak2",
+      "astikorcartsredux:entity/cart/creak3",
+      "astikorcartsredux:entity/cart/creak4"
+    ],
+    "subtitle": "subtitles.astikorcartsredux.cart.creak"
+  }
+}
