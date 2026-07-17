@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -205,11 +204,6 @@ public abstract class AbstractDrawnEntity extends Entity {
                 playerOptional.ifPresent(player -> {
                     var stat = AstikorCartsRedux.CART_ONE_CM.get();
                     player.awardStat(stat, cm);
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        int allCm = serverPlayer.getStats().getValue(Stats.CUSTOM.get(stat));
-                        float fillLevel = this instanceof AbstractDrawnInventoryEntity invCart ? invCart.getFillLevel() : 0f;
-                        //ACCriteriaTriggers.PULL_CART.get().trigger(serverPlayer, this, allCm, fillLevel);
-                    }
                 });
                 for (final Entity passenger : this.getPassengers()) {
                     if (passenger instanceof Player player) {
@@ -533,16 +527,15 @@ public abstract class AbstractDrawnEntity extends Entity {
         return this.isAlive();
     }
 
-//    @Override
-//    //Client
-//    public void lerpTo(final double x, final double y, final double z, final float yaw, final float pitch, final int posRotationIncrements) {
-//        this.lerpX = x;
-//        this.lerpY = y;
-//        this.lerpZ = z;
-//        this.lerpYaw = yaw;
-//        this.lerpPitch = pitch;
-//        this.lerpSteps = posRotationIncrements;
-//    }
+    @Override
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int lerpSteps, boolean teleport) {
+        this.lerpX = x;
+        this.lerpY = y;
+        this.lerpZ = z;
+        this.lerpYaw = yRot;
+        this.lerpPitch = xRot;
+        this.lerpSteps = lerpSteps;
+    }
 
     @Override
     protected void addPassenger(final Entity passenger) {
@@ -642,14 +635,6 @@ public abstract class AbstractDrawnEntity extends Entity {
 
     public WoodType getWoodType(){
         return WoodType.values().filter(type -> type.name().equals(this.entityData.get(WOOD_TYPE))).findFirst().orElse(null);
-    }
-
-    public DyeColor getBannerColor() {
-        final ItemStack banner = this.getBanner();
-        if (banner.getItem() instanceof BannerItem bannerItem) {
-            return bannerItem.getColor();
-        }
-        return null;
     }
 
     public List<Pair<Holder<BannerPattern>, DyeColor>> getBannerPattern() {
