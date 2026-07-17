@@ -173,7 +173,7 @@ public class AstikorCartsRedux {
 			.serverbound(ActionKeyMessage::new).consumer(() -> ActionKeyMessage::handle)
 			.serverbound(ToggleSlowMessage::new).consumer(() -> ToggleSlowMessage::handle)
 			.serverbound(RequestCartUpdateMessage::new).consumer(() -> RequestCartUpdateMessage::handle)
-			.clientbound(UpdateDrawnMessage::new).consumer(UpdateDrawnMessage.Handler::new)
+			.clientbound(UpdateDrawnMessage::new).consumer(() -> new UpdateDrawnMessage.Handler())
 			.serverbound(OpenSupplyCartMessage::new).consumer(() -> OpenSupplyCartMessage::handle)
 			.build();
 
@@ -186,37 +186,37 @@ public class AstikorCartsRedux {
 	public static final RegistryObject<SoundEvent> DETACH_SOUND = registerSoundEvent("entity.cart.detach");
 	public static final RegistryObject<SoundEvent> PLACE_SOUND = registerSoundEvent("entity.cart.place");
 
-	public static final Supplier<EntityType<SupplyCartEntity>> SUPPLY_CART_ENTITY =
+	public static final RegistryObject<EntityType<SupplyCartEntity>> SUPPLY_CART_ENTITY =
 			ENTITY_TYPES.register( "supply_cart", () -> EntityType.Builder.of(SupplyCartEntity::new, MobCategory.MISC)
 					.sized(1.5f, 1.4f)
 					.build("supply_cart"));
 
-	public static final Supplier<EntityType<AnimalCartEntity>> ANIMAL_CART_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<AnimalCartEntity>> ANIMAL_CART_ENTITY = ENTITY_TYPES.register(
 			"animal_cart", () -> EntityType.Builder.of(AnimalCartEntity::new, MobCategory.MISC)
 					.sized(1.3f, 1.4f)
 					.build("animal_cart"));
 
-	public static final Supplier<EntityType<PlowEntity>> PLOW_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<PlowEntity>> PLOW_ENTITY = ENTITY_TYPES.register(
 			"plow", () -> EntityType.Builder.of(PlowEntity::new, MobCategory.MISC)
 					.sized(1.3f, 1.4f)
 					.build("plow"));
 
-	public static final Supplier<EntityType<HandCartEntity>> HAND_CART_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<HandCartEntity>> HAND_CART_ENTITY = ENTITY_TYPES.register(
 			"hand_cart", () -> EntityType.Builder.of(HandCartEntity::new, MobCategory.MISC)
 					.sized(1.3f, 1.1f)
 					.build("hand_cart"));
 
-	public static final Supplier<EntityType<SeedDrillEntity>> SEED_DRILL_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<SeedDrillEntity>> SEED_DRILL_ENTITY = ENTITY_TYPES.register(
 			"seed_drill", () -> EntityType.Builder.of(SeedDrillEntity::new, MobCategory.MISC)
 					.sized(1.3f, 1.4f)
 					.build("seed_drill"));
 
-	public static final Supplier<EntityType<ReaperEntity>> REAPER_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<ReaperEntity>> REAPER_ENTITY = ENTITY_TYPES.register(
 			"reaper", () -> EntityType.Builder.of(ReaperEntity::new, MobCategory.MISC)
 					.sized(1.3f, 1.4f)
 					.build("reaper"));
 
-	public static final Supplier<EntityType<PostilionEntity>> POSTILION_ENTITY = ENTITY_TYPES.register(
+	public static final RegistryObject<EntityType<PostilionEntity>> POSTILION_ENTITY = ENTITY_TYPES.register(
 			"postilion", () -> EntityType.Builder.of(PostilionEntity::new, MobCategory.MISC)
 					.sized(0.25f, 0.25f)
 					.noSummon()

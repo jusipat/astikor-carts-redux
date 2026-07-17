@@ -2,6 +2,7 @@
   "required": true,
   "package": "com.jusipat.astikorcartsredux.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "astikorcartsredux.refmap.json",
 
   "mixins": [
     "AbstractHorseMixin"
