@@ -37,7 +37,6 @@ import java.util.concurrent.CompletableFuture;
 import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.ACTION_KEY_MAPPING;
 import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.TOGGLE_SLOW_MAPPING;
 
-// You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @Mod.EventBusSubscriber(modid = AstikorCartsRedux.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AstikorCartsReduxClient {
 
@@ -49,7 +48,6 @@ public class AstikorCartsReduxClient {
         //container.registerConfig(ModConfig.Type.CLIENT, AstikorCartsReduxConfig.clientSpec());
     }
 
-    // Event is listened to on the mod event bus
     @SubscribeEvent
     public static void registerScreens(FMLClientSetupEvent event) {
         event.enqueueWork(
@@ -65,7 +63,6 @@ public class AstikorCartsReduxClient {
 
     }
 
-    // on the mod event bus only on the physical client
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(AstikorCartsRedux.SUPPLY_CART_ENTITY.get(), SupplyCartRenderer::new);
@@ -87,14 +84,12 @@ public class AstikorCartsReduxClient {
         event.registerLayerDefinition(AstikorCartsReduxModelLayers.REAPER, ReaperModel::createLayer);
     }
 
-    // on the mod event bus only on the physical client
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.register(ACTION_KEY_MAPPING.get());
         event.register(TOGGLE_SLOW_MAPPING.get());
     }
 
-     // on the mod event bus
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
@@ -126,7 +121,6 @@ public class AstikorCartsReduxClient {
     public static void onTextureStitchPost(TextureStitchEvent event) {
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) return;
 
-        // Now the atlas is ready
         AssembledTextureFactory factory = new AssembledTextureFactory();
         Material composterSide = new Material(new ResourceLocation("block/composter_side"), 16)
                 .fill(16, 47, 44, 5, Material.R0, -2, 1)

@@ -286,21 +286,13 @@ public class AstikorCartsRedux {
 		);
 	}
 
-	public static <T extends Entity> Supplier<EntityType<T>> register(String id, Supplier<EntityType<T>> supplier) {
-		return ENTITY_TYPES.register(id, supplier);
-	}
-
-	public static <I extends Item> RegistryObject<I> register(String id, Function<Item.Properties, I> function) {
-		return ITEMS.register(id, () -> function.apply(new Item.Properties()));
-	}
-
 	public static ResourceLocation resLoc(String name) {
 		return new ResourceLocation(MODID, name);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		// Some common setup code
-		LOGGER.info("HELLO FROM COMMON SETUP");
+		//LOGGER.info("HELLO FROM COMMON SETUP");
 		event.enqueueWork(() -> {
 			STAT_SETUP.forEach(Runnable::run);
 		});
@@ -353,24 +345,4 @@ public class AstikorCartsRedux {
 			});
 		}
 	}
-
-//	private void registerPayloads(RegisterPayloadHandlersEvent event) {
-//		// Sets the current network version
-//		final PayloadRegistrar registrar = event.registrar("1");
-//
-//		registrar.playBidirectional(UpdateDrawnPayload.TYPE, UpdateDrawnPayload.CODEC,
-//				(payload, context) -> UpdateDrawnPayload.handle(payload, context.player().level())); // sketchy
-//
-//		registrar.playToServer(ActionKeyPayload.TYPE, ActionKeyPayload.CODEC,
-//				(payload, context) -> ActionKeyPayload.handle(context));
-//		registrar.playToServer(OpenSupplyCartPayload.TYPE, OpenSupplyCartPayload.CODEC,
-//				(payload, context) -> OpenSupplyCartPayload.handle(context));
-//		registrar.playToServer(ToggleSlowPayload.TYPE, ToggleSlowPayload.CODEC,
-//				(payload, context) -> ToggleSlowPayload.handle(context.player()));
-//
-//		registrar.playToServer(RequestCartUpdatePayload.TYPE, RequestCartUpdatePayload.CODEC,
-//				RequestCartUpdatePayload::handle);
-//		//registrar.playToServer(CoachmanMovePayload.TYPE, CoachmanMovePayload.CODEC,
-//		//		CoachmanMovePayload::handle); todo: look into coachman
-//	}
 }
