@@ -37,8 +37,6 @@ import java.util.concurrent.CompletableFuture;
 import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.ACTION_KEY_MAPPING;
 import static com.jusipat.astikorcartsredux.AstikorCartsReduxClientRuntime.TOGGLE_SLOW_MAPPING;
 
-// This class will not load on dedicated servers. Accessing client side code from here is safe.
-@Mod(value = AstikorCartsRedux.MODID)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @Mod.EventBusSubscriber(modid = AstikorCartsRedux.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AstikorCartsReduxClient {

@@ -19,6 +19,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -94,33 +95,21 @@ public abstract class DrawnRenderer<T extends AbstractDrawnEntity, M extends Ent
         stack.popPose();
     }
 
-    private static final Field CHILDREN_FIELD;
-
-    static {
-        try {
-            CHILDREN_FIELD = ModelPart.class.getDeclaredField("children");
-            CHILDREN_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final Field CHILD_MODELS = ObfuscationReflectionHelper.findField(ModelPart.class, "f_104213_");
 
     @SuppressWarnings("unchecked")
-    private Map<String, ModelPart> getChildren(ModelPart part) {
-        try {
-            return (Map<String, ModelPart>) CHILDREN_FIELD.get(part);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected void attach(final ModelPart bone, final ModelPart attachment, final Consumer<PoseStack> function, final PoseStack stack) {
         stack.pushPose();
         bone.translateAndRotate(stack);
         if (bone == attachment) {
             function.accept(stack);
         } else {
-            final Map<String, ModelPart> childModels = getChildren(bone);
+            final Map<String, ModelPart> childModels;
+            try {
+                childModels = (Map<String, ModelPart>) CHILD_MODELS.get(bone);
+            } catch (final IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
             for (final ModelPart child : childModels.values()) {
                 this.attach(child, attachment, function, stack);
             }

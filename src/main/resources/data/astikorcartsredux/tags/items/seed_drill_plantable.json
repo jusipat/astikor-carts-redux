@@ -8,7 +8,6 @@
     "minecraft:pumpkin_seeds",
     "minecraft:torchflower_seeds",
     "minecraft:pitcher_pod",
-    "#c:crops",
-    "#c:seeds"
+    "#forge:seeds"
   ]
 }
